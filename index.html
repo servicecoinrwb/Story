@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Story Stamp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --grape:#3B2A6B;
+  --grape-deep:#1B1246;
+  --paper:#FFFBF2;
+  --ink:#241B4A;
+  --stamp:#E8465E;
+  --mint:#3DD9A4;
+  --sun:#FFD23F;
+  --sky:#4AA8FF;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--grape);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(74,168,255,.28), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(61,217,164,.18), transparent 70%);
+  background-attachment:fixed;
+  color:var(--paper);
+  font-family:"Atkinson Hyperlegible", "Trebuchet MS", system-ui, sans-serif;
+  font-size:17px;
+  line-height:1.55;
+  min-height:100vh;
+  padding:14px 14px 40px;
+  padding-bottom:calc(40px + env(safe-area-inset-bottom));
+}
+h1,h2,h3,.display{font-family:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;margin:0}
+.mono{font-family:"Courier Prime",ui-monospace,monospace}
+
+.wrap{max-width:560px;margin:0 auto}
+
+/* ---------- header: library card header ---------- */
+header{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:10px;
+  padding:4px 4px 12px;
+}
+header h1{font-size:30px;line-height:1;color:var(--paper)}
+header h1 em{font-style:normal;color:var(--sun)}
+.tagline{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,251,242,.6);margin-top:6px}
+.cardno{
+  font-family:"Courier Prime",monospace;font-size:11px;text-align:right;
+  color:rgba(255,251,242,.55);line-height:1.4;white-space:nowrap
+}
+
+/* ---------- cards ---------- */
+.card{
+  background:var(--paper);
+  color:var(--ink);
+  border-radius:20px;
+  box-shadow:5px 6px 0 var(--grape-deep);
+  padding:18px;
+  margin-bottom:16px;
+}
+.card.dark{background:rgba(27,18,70,.55);color:var(--paper);box-shadow:none;border:2px solid rgba(255,251,242,.16)}
+.card h2{font-size:19px;margin-bottom:4px}
+.card .sub{font-size:13px;color:rgba(36,27,74,.62);margin-bottom:14px}
+.card.dark .sub{color:rgba(255,251,242,.6)}
+
+/* ---------- viewfinder ---------- */
+.finder{
+  position:relative;width:100%;aspect-ratio:3/4;max-height:52vh;
+  background:var(--grape-deep);border-radius:16px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.finder video,.finder img{width:100%;height:100%;object-fit:cover;display:block}
+.finder .placeholder{
+  text-align:center;padding:24px;color:rgba(255,251,242,.72);font-size:14px;
+}
+.finder .placeholder .big{font-size:44px;display:block;margin-bottom:10px}
+.brackets{position:absolute;inset:12px;pointer-events:none}
+.brackets i{position:absolute;width:26px;height:26px;border:3px solid var(--sun);border-radius:3px}
+.brackets i:nth-child(1){top:0;left:0;border-right:0;border-bottom:0}
+.brackets i:nth-child(2){top:0;right:0;border-left:0;border-bottom:0}
+.brackets i:nth-child(3){bottom:0;left:0;border-right:0;border-top:0}
+.brackets i:nth-child(4){bottom:0;right:0;border-left:0;border-top:0}
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;
+  font-size:17px;border:0;border-radius:14px;padding:15px 20px;
+  background:var(--sun);color:var(--ink);cursor:pointer;
+  box-shadow:0 4px 0 #C79A15;transition:transform .08s, box-shadow .08s;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;
+}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #C79A15}
+.btn:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.btn.mint{background:var(--mint);box-shadow:0 4px 0 #22A87A}
+.btn.mint:active{box-shadow:0 1px 0 #22A87A}
+.btn.sky{background:var(--sky);color:#08213D;box-shadow:0 4px 0 #2A72B8}
+.btn.sky:active{box-shadow:0 1px 0 #2A72B8}
+.btn.ghost{background:transparent;color:var(--paper);border:2px solid rgba(255,251,242,.35);box-shadow:none}
+.btn.ghost:active{transform:translateY(2px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-row{display:flex;gap:10px;margin-top:12px}
+.btn-row .btn{flex:1}
+.btn.small{font-size:14px;padding:11px 14px}
+
+/* ---------- reading text ---------- */
+.pagetext{
+  font-size:20px;line-height:1.8;margin:0;
+  max-height:34vh;overflow-y:auto;padding-right:4px;
+}
+.pagetext .sent{border-radius:5px;padding:1px 2px;transition:background .18s}
+.pagetext .sent.on{background:var(--sun);box-shadow:0 0 0 3px var(--sun)}
+
+/* ---------- stamp card (signature) ---------- */
+.stampcard{
+  background:var(--paper);color:var(--ink);border-radius:14px;padding:14px;
+  background-image:repeating-linear-gradient(to bottom, transparent 0 33px, rgba(36,27,74,.09) 33px 34px);
+}
+.stampcard .hdr{
+  display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:2px solid var(--ink);padding-bottom:6px;margin-bottom:12px;
+}
+.stampcard .hdr span{font-family:"Courier Prime",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.stamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:10px;min-height:56px}
+.stamp{
+  border:2.5px solid var(--stamp);color:var(--stamp);border-radius:6px;
+  font-family:"Courier Prime",monospace;font-weight:700;text-align:center;
+  padding:6px 2px;line-height:1.25;opacity:.86;
+  animation:thump .34s cubic-bezier(.2,1.5,.4,1);
+}
+.stamp b{display:block;font-size:16px}
+.stamp small{display:block;font-size:9px;letter-spacing:.06em}
+@keyframes thump{0%{transform:scale(2.4) rotate(0deg);opacity:0}60%{opacity:.95}100%{transform:scale(1) rotate(var(--rot,-4deg));opacity:.86}}
+.stamp{transform:rotate(var(--rot,-4deg))}
+.stamps .empty{
+  grid-column:1/-1;font-size:13px;color:rgba(36,27,74,.5);text-align:center;padding:14px 4px;
+}
+
+/* ---------- quiz ---------- */
+.qnum{font-family:"Courier Prime",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--stamp);font-weight:700}
+.question{font-size:21px;line-height:1.45;margin:8px 0 16px;font-family:"Bricolage Grotesque",sans-serif;font-weight:700}
+textarea{
+  width:100%;border:2.5px solid rgba(36,27,74,.25);border-radius:12px;padding:12px;
+  font-family:inherit;font-size:17px;color:var(--ink);background:#fff;resize:vertical;min-height:88px;
+}
+textarea:focus{outline:0;border-color:var(--sky)}
+.feedback{border-radius:12px;padding:13px 15px;margin-top:14px;font-size:16px;line-height:1.5}
+.feedback.yes{background:rgba(61,217,164,.22);border:2px solid var(--mint)}
+.feedback.close{background:rgba(255,210,63,.25);border:2px solid var(--sun)}
+.stars{font-size:26px;letter-spacing:3px;margin-top:6px}
+
+/* ---------- misc ---------- */
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+label.field{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,251,242,.6);display:block;margin-bottom:5px}
+select,input[type=range]{
+  font-family:inherit;font-size:15px;padding:9px 10px;border-radius:10px;
+  border:2px solid rgba(255,251,242,.25);background:rgba(27,18,70,.6);color:var(--paper);width:100%;
+}
+input[type=range]{padding:0;height:34px;border:0;background:transparent;accent-color:var(--sun)}
+.field-wrap{flex:1;min-width:140px}
+.status{
+  font-family:"Courier Prime",monospace;font-size:13px;text-align:center;
+  padding:10px;color:rgba(255,251,242,.8);
+}
+.status.err{color:#FFB3BE}
+.hidden{display:none !important}
+.spin{display:inline-block;width:15px;height:15px;border:3px solid rgba(255,251,242,.3);border-top-color:var(--sun);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:7px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.bigstamp{
+  border:5px solid var(--stamp);color:var(--stamp);border-radius:12px;
+  font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:30px;
+  text-align:center;padding:16px;transform:rotate(-7deg);margin:22px auto;max-width:300px;
+  letter-spacing:.02em;animation:thump .4s cubic-bezier(.2,1.5,.4,1);
+}
+.bigstamp small{display:block;font-family:"Courier Prime",monospace;font-size:11px;letter-spacing:.2em;margin-top:5px;font-weight:400}
+footer{text-align:center;font-size:12px;color:rgba(255,251,242,.4);padding:8px 0 0}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>Story <em>Stamp</em></h1>
+    <div class="tagline">Point · Listen · Answer</div>
+  </div>
+  <div class="cardno mono">CARD No.<br><span id="cardNo">000-000</span></div>
+</header>
+
+<!-- ================= SETUP ================= -->
+<section id="setupScreen">
+  <div class="card dark">
+    <h2>Get ready to read</h2>
+    <p class="sub">Pick who reads out loud and how old you are. You can change these any time.</p>
+    <div class="row">
+      <div class="field-wrap">
+        <label class="field" for="voiceSel">Reading voice</label>
+        <select id="voiceSel"><option>Loading voices…</option></select>
+      </div>
+      <div class="field-wrap">
+        <label class="field" for="ageSel">Reader age</label>
+        <select id="ageSel">
+          <option value="5-6">5 to 6</option>
+          <option value="7-8" selected>7 to 8</option>
+          <option value="9-10">9 to 10</option>
+          <option value="11-12">11 to 12</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <label class="field" for="rateSel">Reading speed — <span id="rateLbl">just right</span></label>
+      <input type="range" id="rateSel" min="0.6" max="1.3" step="0.05" value="0.9">
+    </div>
+    <button class="btn mint" id="startBtn" style="margin-top:16px">Start reading</button>
+  </div>
+</section>
+
+<!-- ================= READ ================= -->
+<section id="readScreen" class="hidden">
+  <div class="card">
+    <div class="finder" id="finder">
+      <video id="video" playsinline muted autoplay class="hidden"></video>
+      <img id="shot" class="hidden" alt="The page you just took a picture of">
+      <div class="placeholder" id="finderMsg">
+        <span class="big">📖</span>
+        Line the book page up inside the yellow corners, then tap the button.
+      </div>
+      <div class="brackets"><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="snapBtn">📸 Read this page</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost small" id="uploadBtn" style="color:var(--ink);border-color:rgba(36,27,74,.3)">Use a photo instead</button>
+      <button class="btn ghost small" id="retryCamBtn" style="color:var(--ink);border-color:rgba(36,27,74,.3)">Turn camera on</button>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" capture="environment" class="hidden">
+    <div class="status hidden" id="readStatus" style="color:var(--ink)"></div>
+  </div>
+
+  <div class="card hidden" id="textCard">
+    <h2>This page says…</h2>
+    <p class="pagetext" id="pageText"></p>
+    <div class="btn-row">
+      <button class="btn sky" id="againBtn">🔊 Read it again</button>
+      <button class="btn ghost small" id="stopBtn" style="color:var(--ink);border-color:rgba(36,27,74,.3);flex:0 0 96px">⏹ Stop</button>
+    </div>
+  </div>
+
+  <div class="card stampcard">
+    <div class="hdr">
+      <span>Pages read today</span>
+      <span id="stampCount">0</span>
+    </div>
+    <div class="stamps" id="stamps">
+      <div class="empty">No stamps yet. Every page you read puts a stamp on your card.</div>
+    </div>
+  </div>
+
+  <button class="btn mint" id="quizBtn" disabled>✅ Done with the chapter — ask me questions</button>
+  <div class="status hidden" id="quizStatus"></div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quizScreen" class="hidden">
+  <div class="card">
+    <div class="qnum" id="qNum">Question 1 of 5</div>
+    <div class="question" id="qText"></div>
+    <textarea id="answerBox" placeholder="Type your answer here…"></textarea>
+    <div class="btn-row">
+      <button class="btn sky" id="micBtn">🎤 Say it</button>
+      <button class="btn" id="submitBtn">Check my answer</button>
+    </div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="btn-row hidden" id="nextRow">
+      <button class="btn mint" id="nextBtn">Next question →</button>
+    </div>
+  </div>
+  <button class="btn ghost small" id="backToRead">← Back to reading</button>
+</section>
+
+<!-- ================= DONE ================= -->
+<section id="doneScreen" class="hidden">
+  <div class="card">
+    <h2 id="doneTitle">Chapter finished!</h2>
+    <p class="sub" id="doneSub"></p>
+    <div class="bigstamp">CHECKED OUT<small id="doneStars"></small></div>
+    <button class="btn mint" id="newChapterBtn">Start a new chapter</button>
+  </div>
+</section>
+
+<footer>Story Stamp · reads real paper books out loud</footer>
+</div>
+
+<canvas id="canvas" class="hidden"></canvas>
+
+<script>
+/* =======================================================================
+   CONFIG — where the AI calls go.
+   Inside Claude.ai this works as-is (no key needed).
+   To host it yourself, point API_URL at your own proxy/Worker that adds
+   the x-api-key header server-side. Never put a raw API key in this file.
+   ======================================================================= */
+const API_URL = "https://api.anthropic.com/v1/messages";
+const MODEL   = "claude-sonnet-4-6";
+
+async function askClaude(content, maxTokens = 1000){
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, messages: [{ role:"user", content }] })
+  });
+  if (!res.ok) throw new Error("api " + res.status);
+  const data = await res.json();
+  return (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n").trim();
+}
+function parseJSON(raw){
+  const clean = raw.replace(/```json|```/g, "").trim();
+  const s = clean.indexOf("{") === -1 ? clean.indexOf("[") : Math.min(...[clean.indexOf("{"), clean.indexOf("[")].filter(i => i > -1));
+  const e = Math.max(clean.lastIndexOf("}"), clean.lastIndexOf("]"));
+  return JSON.parse(s > -1 && e > -1 ? clean.slice(s, e + 1) : clean);
+}
+
+/* ---------------- state ---------------- */
+const S = { pages:[], questions:[], qi:0, stars:0, voice:null, rate:0.9, age:"7-8", stream:null, busy:false };
+const $ = id => document.getElementById(id);
+const show = (id, on) => $(id).classList.toggle("hidden", !on);
+
+$("cardNo").textContent = String(Math.floor(Math.random()*900+100)) + "-" + String(Math.floor(Math.random()*900+100));
+
+/* ---------------- speech out ----------------
+   Some browsers and sandboxed frames have no speech engine at all.
+   SS/Utter are safe stand-ins so the rest of the app still runs:
+   pages are still transcribed, shown, and quizzed — just silently. */
+const TTS = !!(window.speechSynthesis && window.SpeechSynthesisUtterance);
+const SS = window.speechSynthesis || { getVoices:()=>[], speak(){}, cancel(){}, onvoiceschanged:null };
+const Utter = window.SpeechSynthesisUtterance || function(t){ this.text = t; };
+
+let queue = [], speaking = false, unlocked = false;
+function loadVoices(){
+  if(!TTS){ return; }
+  const all = SS.getVoices().filter(v => v.lang && v.lang.toLowerCase().startsWith("en"));
+  if(!all.length) return;
+  const nice = ["Samantha","Google US English","Karen","Moira","Daniel","Google UK English Female","Allison","Ava","Zira"];
+  all.sort((a,b) => (nice.findIndex(n=>b.name.includes(n)) - nice.findIndex(n=>a.name.includes(n))));
+  const sel = $("voiceSel"); sel.innerHTML = "";
+  all.forEach((v,i) => {
+    const o = document.createElement("option");
+    o.value = i; o.textContent = v.name.replace(/(Microsoft|Google|Apple)\s/,"") + (v.lang.includes("GB") ? " (British)" : "");
+    sel.appendChild(o);
+  });
+  S.voice = all[0];
+  sel.onchange = () => { S.voice = all[sel.value]; sample(); };
+}
+SS.onvoiceschanged = loadVoices; loadVoices();
+if(!TTS){
+  $("voiceSel").closest(".row").classList.add("hidden");
+  $("rateSel").parentElement.classList.add("hidden");
+  const n = document.createElement("p");
+  n.className = "sub";
+  n.innerHTML = "<b>Reading out loud is off in this browser.</b> Pages will still be shown on screen and you'll still get questions. Open this in Chrome or Safari on a phone or tablet to hear it read aloud.";
+  $("startBtn").before(n);
+}
+function sample(){ SS.cancel(); const u = new Utter("Hi! I'll read your book."); u.voice = S.voice; u.rate = S.rate; SS.speak(u); }
+
+function unlockSpeech(){
+  if(unlocked) return; unlocked = true;
+  const u = new Utter(" "); u.volume = 0; SS.speak(u);
+}
+function splitSentences(t){
+  return t.replace(/\s+/g," ").match(/[^.!?…]+[.!?…]*\s*/g) || [t];
+}
+function readAloud(text, container){
+  SS.cancel(); queue = []; speaking = true;
+  const parts = splitSentences(text);
+  container.innerHTML = "";
+  const spans = parts.map(p => { const s = document.createElement("span"); s.className = "sent"; s.textContent = p; container.appendChild(s); return s; });
+  if(!TTS){ speaking = false; return; }
+  let i = 0;
+  const next = () => {
+    if(i >= parts.length || !speaking){ spans.forEach(s => s.classList.remove("on")); speaking = false; return; }
+    spans.forEach(s => s.classList.remove("on"));
+    spans[i].classList.add("on");
+    spans[i].scrollIntoView({block:"nearest", behavior:"smooth"});
+    const u = new Utter(parts[i]);
+    u.voice = S.voice; u.rate = S.rate; u.pitch = 1.02;
+    u.onend = () => { i++; next(); };
+    u.onerror = () => { i++; next(); };
+    SS.speak(u);
+  };
+  next();
+}
+function stopReading(){ speaking = false; SS.cancel(); document.querySelectorAll(".sent.on").forEach(s => s.classList.remove("on")); }
+
+/* ---------------- setup screen ---------------- */
+$("rateSel").oninput = e => {
+  S.rate = parseFloat(e.target.value);
+  $("rateLbl").textContent = S.rate < 0.78 ? "nice and slow" : S.rate > 1.05 ? "speedy" : "just right";
+};
+$("ageSel").onchange = e => S.age = e.target.value;
+$("startBtn").onclick = () => { unlockSpeech(); show("setupScreen", false); show("readScreen", true); startCamera(); };
+
+/* ---------------- camera ---------------- */
+async function startCamera(){
+  try{
+    S.stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ideal:"environment"}, width:{ideal:1600} }, audio:false });
+    const v = $("video"); v.srcObject = S.stream; await v.play();
+    v.classList.remove("hidden"); $("finderMsg").classList.add("hidden"); $("shot").classList.add("hidden");
+    $("retryCamBtn").classList.add("hidden");
+  }catch(err){
+    $("finderMsg").innerHTML = '<span class="big">📷</span>The camera isn\'t on. Tap <b>Turn camera on</b> to allow it, or tap <b>Use a photo instead</b> to pick a picture of the page.';
+    $("finderMsg").classList.remove("hidden");
+  }
+}
+$("retryCamBtn").onclick = startCamera;
+$("uploadBtn").onclick = () => $("fileInput").click();
+$("fileInput").onchange = e => {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => { const b64 = r.result.split(",")[1]; showShot(r.result); transcribe(b64, f.type || "image/jpeg"); };
+  r.readAsDataURL(f);
+};
+function showShot(dataUrl){
+  $("shot").src = dataUrl; $("shot").classList.remove("hidden");
+  $("video").classList.add("hidden"); $("finderMsg").classList.add("hidden");
+}
+$("snapBtn").onclick = () => {
+  unlockSpeech();
+  const v = $("video");
+  if(v.classList.contains("hidden") || !v.videoWidth){ $("fileInput").click(); return; }
+  const c = $("canvas"), scale = Math.min(1, 1600 / v.videoWidth);
+  c.width = v.videoWidth * scale; c.height = v.videoHeight * scale;
+  c.getContext("2d").drawImage(v, 0, 0, c.width, c.height);
+  const dataUrl = c.toDataURL("image/jpeg", 0.85);
+  showShot(dataUrl);
+  transcribe(dataUrl.split(",")[1], "image/jpeg");
+};
+
+/* ---------------- transcribe a page ---------------- */
+async function transcribe(b64, media){
+  if(S.busy) return; S.busy = true;
+  stopReading();
+  $("snapBtn").disabled = true;
+  const st = $("readStatus"); st.className = "status"; st.style.color = "var(--ink)";
+  st.innerHTML = '<span class="spin"></span>Reading the page…';
+  try{
+    const raw = await askClaude([
+      { type:"image", source:{ type:"base64", media_type:media, data:b64 } },
+      { type:"text", text:
+`This is a photo of a page from a children's book. Transcribe the story text on the page exactly as written, in reading order.
+
+Rules:
+- Include only the story text. Skip page numbers, headers, publisher notes, and any words that are part of an illustration label.
+- Keep the original wording, spelling, and punctuation. Do not summarize, simplify, or add anything.
+- If the photo is too blurry or has no readable text, set "text" to "" and explain in "problem".
+
+Reply with ONLY this JSON, no other words and no markdown fences:
+{"text":"the page text here","problem":null}` }
+    ]);
+    const out = parseJSON(raw);
+    if(!out.text || !out.text.trim()){
+      st.className = "status err"; st.style.color = "#B3283C";
+      st.textContent = "😕 " + (out.problem || "I couldn't read that one.") + " Try again with more light and hold the phone still.";
+      return;
+    }
+    S.pages.push(out.text.trim());
+    addStamp(S.pages.length);
+    st.classList.add("hidden");
+    show("textCard", true);
+    readAloud(out.text.trim(), $("pageText"));
+    $("quizBtn").disabled = false;
+    $("quizBtn").textContent = `✅ Done with the chapter — ask me questions (${S.pages.length} page${S.pages.length>1?"s":""})`;
+  }catch(err){
+    st.className = "status err"; st.style.color = "#B3283C";
+    st.textContent = "That didn't go through. Check the internet connection and tap the button again.";
+  }finally{
+    S.busy = false; $("snapBtn").disabled = false;
+  }
+}
+function addStamp(n){
+  const box = $("stamps");
+  const empty = box.querySelector(".empty"); if(empty) empty.remove();
+  const d = document.createElement("div");
+  d.className = "stamp";
+  d.style.setProperty("--rot", (Math.random()*10 - 5).toFixed(1) + "deg");
+  const t = new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
+  d.innerHTML = `<b>PG ${n}</b><small>${t}</small>`;
+  box.appendChild(d);
+  $("stampCount").textContent = n;
+}
+$("againBtn").onclick = () => { unlockSpeech(); readAloud(S.pages[S.pages.length-1], $("pageText")); };
+$("stopBtn").onclick = stopReading;
+
+/* ---------------- questions ---------------- */
+$("quizBtn").onclick = async () => {
+  stopReading();
+  const st = $("quizStatus"); st.classList.remove("hidden"); st.className = "status";
+  st.innerHTML = '<span class="spin"></span>Thinking up some questions…';
+  $("quizBtn").disabled = true;
+  try{
+    const raw = await askClaude([{ type:"text", text:
+`Here is a chapter a ${S.age} year old just read out loud:
+
+"""
+${S.pages.join("\n\n")}
+"""
+
+Write 5 comprehension questions about it for a ${S.age} year old.
+- Question 1 and 2: what happened (facts straight from the text).
+- Question 3 and 4: why did it happen, or how did a character feel.
+- Question 5: what do you think happens next, or what would you have done.
+- Use short, warm, everyday words. One sentence each. Second person ("Why did Jenny...").
+- For each, list the key points a good answer would mention.
+
+Reply with ONLY this JSON, no other words and no markdown fences:
+[{"q":"the question","key":"what a good answer includes"}]` }], 1000);
+    S.questions = parseJSON(raw); S.qi = 0; S.stars = 0;
+    st.classList.add("hidden");
+    show("readScreen", false); show("quizScreen", true);
+    renderQuestion();
+  }catch(err){
+    st.className = "status err";
+    st.textContent = "Couldn't make the questions. Tap again in a second.";
+    $("quizBtn").disabled = false;
+  }
+};
+
+function renderQuestion(){
+  const q = S.questions[S.qi];
+  $("qNum").textContent = `Question ${S.qi+1} of ${S.questions.length}`;
+  $("qText").textContent = q.q;
+  $("answerBox").value = "";
+  show("feedback", false); show("nextRow", false);
+  $("submitBtn").disabled = false;
+  $("nextBtn").textContent = S.qi === S.questions.length - 1 ? "See my stars →" : "Next question →";
+  unlockSpeech();
+  const u = new Utter(q.q);
+  u.voice = S.voice; u.rate = S.rate; SS.speak(u);
+}
+
+$("submitBtn").onclick = async () => {
+  const ans = $("answerBox").value.trim();
+  if(!ans){ $("answerBox").focus(); return; }
+  $("submitBtn").disabled = true;
+  const fb = $("feedback"); fb.className = "feedback close"; fb.classList.remove("hidden");
+  fb.innerHTML = '<span class="spin"></span>Checking…';
+  try{
+    const raw = await askClaude([{ type:"text", text:
+`A ${S.age} year old read this chapter:
+
+"""
+${S.pages.join("\n\n")}
+"""
+
+Question: ${S.questions[S.qi].q}
+A good answer includes: ${S.questions[S.qi].key}
+The child answered: "${ans}"
+
+Judge it kindly. Spelling and grammar do not matter at all — only whether they understood.
+- "score" 2 if they got the idea, 1 if partly, 0 if they missed it or guessed.
+- "note": 1-2 short sentences spoken straight to the child. Start by naming one real thing they got right. If they missed something, point them to it gently and tell them the answer. Warm, never babyish, never sarcastic.
+
+Reply with ONLY this JSON, no other words and no markdown fences:
+{"score":2,"note":"..."}` }]);
+    const r = parseJSON(raw);
+    S.stars += r.score;
+    fb.className = "feedback " + (r.score === 2 ? "yes" : "close");
+    fb.innerHTML = (r.score === 2 ? "🌟 " : "💡 ") + r.note +
+      '<div class="stars">' + "★".repeat(r.score) + "☆".repeat(2 - r.score) + "</div>";
+    const u = new Utter(r.note); u.voice = S.voice; u.rate = S.rate; SS.speak(u);
+    show("nextRow", true);
+  }catch(err){
+    fb.className = "feedback close";
+    fb.textContent = "That didn't send. Tap Check my answer again.";
+    $("submitBtn").disabled = false;
+  }
+};
+
+$("nextBtn").onclick = () => {
+  S.qi++;
+  if(S.qi < S.questions.length){ renderQuestion(); return; }
+  const max = S.questions.length * 2;
+  show("quizScreen", false); show("doneScreen", true);
+  const pct = S.stars / max;
+  $("doneTitle").textContent = pct >= .8 ? "You nailed it!" : pct >= .5 ? "Nice reading!" : "Chapter finished!";
+  $("doneSub").textContent = `You read ${S.pages.length} page${S.pages.length>1?"s":""} and earned ${S.stars} out of ${max} stars.`;
+  $("doneStars").textContent = "★".repeat(S.stars) + "☆".repeat(max - S.stars);
+  const u = new Utter($("doneTitle").textContent + " " + $("doneSub").textContent);
+  u.voice = S.voice; u.rate = S.rate; SS.speak(u);
+};
+
+$("backToRead").onclick = () => { stopReading(); show("quizScreen", false); show("readScreen", true); $("quizBtn").disabled = false; };
+$("newChapterBtn").onclick = () => {
+  S.pages = []; S.questions = []; S.qi = 0; S.stars = 0;
+  $("stamps").innerHTML = '<div class="empty">No stamps yet. Every page you read puts a stamp on your card.</div>';
+  $("stampCount").textContent = "0";
+  $("quizBtn").disabled = true; $("quizBtn").textContent = "✅ Done with the chapter — ask me questions";
+  show("textCard", false); show("doneScreen", false); show("readScreen", true);
+  startCamera();
+};
+
+/* ---------------- speech in (answering out loud) ---------------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if(!SR){ $("micBtn").classList.add("hidden"); }
+else{
+  let rec = null, listening = false;
+  $("micBtn").onclick = () => {
+    if(listening){ rec.stop(); return; }
+    rec = new SR(); rec.lang = "en-US"; rec.interimResults = true; rec.continuous = false;
+    rec.onstart = () => { listening = true; $("micBtn").textContent = "🔴 Listening… tap to stop"; };
+    rec.onresult = e => {
+      let t = ""; for(const r of e.results) t += r[0].transcript;
+      $("answerBox").value = t;
+    };
+    rec.onerror = () => { $("answerBox").placeholder = "The mic didn't work — type your answer instead."; };
+    rec.onend = () => { listening = false; $("micBtn").textContent = "🎤 Say it"; };
+    SS.cancel();
+    rec.start();
+  };
+}
+</script>
+</body>
+</html>
