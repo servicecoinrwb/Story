@@ -176,6 +176,48 @@ input[type=range]{padding:0;height:34px;border:0;background:transparent;accent-c
 }
 .bigstamp small{display:block;font-family:"Courier Prime",monospace;font-size:11px;letter-spacing:.2em;margin-top:5px;font-weight:400}
 footer{text-align:center;font-size:12px;color:rgba(255,251,242,.4);padding:8px 0 0}
+/* ---------- combo meter ---------- */
+.combo{
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;min-height:26px;
+}
+.combo .pip{width:22px;height:22px;border-radius:50%;border:2.5px solid rgba(36,27,74,.22);background:transparent;transition:transform .2s}
+.combo .pip.lit{background:var(--sun);border-color:#C79A15;transform:scale(1.12)}
+.combo .word{
+  font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:15px;color:var(--stamp);
+  margin-left:4px;animation:thump .3s cubic-bezier(.2,1.5,.4,1)
+}
+
+/* ---------- stickers ---------- */
+.reveal{text-align:center;padding:6px 0 2px}
+.reveal .card-sticker{
+  display:inline-block;background:var(--paper);border-radius:18px;padding:16px 22px;
+  border:4px dashed var(--sun);animation:pop .5s cubic-bezier(.2,1.6,.4,1);
+}
+@keyframes pop{0%{transform:scale(.2) rotate(-18deg);opacity:0}70%{transform:scale(1.12) rotate(4deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+.reveal .emoji{font-size:56px;line-height:1.1;display:block}
+.reveal .nm{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:19px;margin-top:4px}
+.reveal .tier{font-family:"Courier Prime",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--stamp)}
+.newbadge{
+  display:inline-block;background:var(--stamp);color:#fff;font-family:"Courier Prime",monospace;
+  font-size:10px;letter-spacing:.14em;padding:3px 8px;border-radius:20px;margin-top:7px;font-weight:700
+}
+.book{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:10px}
+.slot{
+  aspect-ratio:1;border-radius:14px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:5px;
+  background:rgba(36,27,74,.07);border:2px dashed rgba(36,27,74,.18);
+}
+.slot.have{background:var(--paper);border:2.5px solid var(--sun);box-shadow:2px 3px 0 rgba(36,27,74,.18)}
+.slot .e{font-size:28px;line-height:1}
+.slot.locked .e{opacity:.18;filter:grayscale(1)}
+.slot .n{font-size:9px;line-height:1.15;margin-top:3px;font-weight:700;color:var(--ink)}
+.slot.locked .n{color:rgba(36,27,74,.35)}
+.slot .dup{font-family:"Courier Prime",monospace;font-size:9px;color:var(--stamp);font-weight:700}
+.rank{
+  font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:22px;color:var(--ink)
+}
+.tally{display:flex;gap:14px;font-family:"Courier Prime",monospace;font-size:12px;color:rgba(36,27,74,.65);margin:4px 0 14px;flex-wrap:wrap}
+
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 </head>
@@ -215,6 +257,7 @@ footer{text-align:center;font-size:12px;color:rgba(255,251,242,.4);padding:8px 0
       <input type="range" id="rateSel" min="0.6" max="1.3" step="0.05" value="0.9">
     </div>
     <button class="btn mint" id="startBtn" style="margin-top:16px">Start reading</button>
+    <button class="btn ghost small" id="bookBtn" style="margin-top:10px">🏅 My sticker book</button>
   </div>
 </section>
 
@@ -267,6 +310,7 @@ footer{text-align:center;font-size:12px;color:rgba(255,251,242,.4);padding:8px 0
 <!-- ================= QUIZ ================= -->
 <section id="quizScreen" class="hidden">
   <div class="card">
+    <div class="combo" id="combo"></div>
     <div class="qnum" id="qNum">Question 1 of 5</div>
     <div class="question" id="qText"></div>
     <textarea id="answerBox" placeholder="Type your answer here…"></textarea>
@@ -288,7 +332,21 @@ footer{text-align:center;font-size:12px;color:rgba(255,251,242,.4);padding:8px 0
     <h2 id="doneTitle">Chapter finished!</h2>
     <p class="sub" id="doneSub"></p>
     <div class="bigstamp">CHECKED OUT<small id="doneStars"></small></div>
+    <div class="reveal hidden" id="reveal"></div>
     <button class="btn mint" id="newChapterBtn">Start a new chapter</button>
+    <div class="btn-row">
+      <button class="btn ghost small" id="bookBtn2" style="color:var(--ink);border-color:rgba(36,27,74,.3)">🏅 My sticker book</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STICKER BOOK ================= -->
+<section id="bookScreen" class="hidden">
+  <div class="card">
+    <div class="rank" id="rankName">Page Turner</div>
+    <div class="tally" id="tally"></div>
+    <div class="book" id="book"></div>
+    <button class="btn mint" id="closeBookBtn" style="margin-top:16px">← Back</button>
   </div>
 </section>
 
@@ -325,7 +383,80 @@ function parseJSON(raw){
 }
 
 /* ---------------- state ---------------- */
-const S = { pages:[], questions:[], qi:0, stars:0, voice:null, rate:0.9, age:"7-8", stream:null, busy:false };
+const S = { pages:[], questions:[], qi:0, stars:0, streak:0, bestStreak:0, voice:null, rate:0.9, age:"7-8", stream:null, busy:false };
+
+/* Saved progress. Wrapped because storage is blocked in some sandboxed
+   frames — there it just doesn't persist instead of throwing. */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem("storystamp:" + k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem("storystamp:" + k, JSON.stringify(v)); }catch(e){} }
+};
+const SAVE = {
+  stickers: store.get("stickers", {}),   // { id: count }
+  stars:    store.get("stars", 0),
+  chapters: store.get("chapters", 0),
+  best:     store.get("best", 0)
+};
+function persist(){
+  store.set("stickers", SAVE.stickers); store.set("stars", SAVE.stars);
+  store.set("chapters", SAVE.chapters); store.set("best", SAVE.best);
+}
+
+/* Stickers are earned for understanding the chapter, never for page count —
+   otherwise the fastest way to collect is to snap blurry pages and skip reading. */
+const STICKERS = [
+  {id:"worm", e:"🐛", n:"Bookworm",     t:"common"},
+  {id:"star", e:"⭐", n:"Gold Star",     t:"common"},
+  {id:"frog", e:"🐸", n:"Leapfrog",      t:"common"},
+  {id:"cook", e:"🍪", n:"Snack Break",   t:"common"},
+  {id:"ball", e:"🎈", n:"Big Balloon",   t:"common"},
+  {id:"cat",  e:"🐱", n:"Lap Cat",       t:"common"},
+  {id:"mush", e:"🍄", n:"Toadstool",     t:"common"},
+  {id:"pen",  e:"✏️", n:"Sharp Pencil",  t:"common"},
+  {id:"leaf", e:"🍁", n:"Bookmark Leaf", t:"common"},
+  {id:"bee",  e:"🐝", n:"Busy Bee",      t:"common"},
+  {id:"pup",  e:"🐶", n:"Good Dog",      t:"common"},
+  {id:"boat", e:"⛵", n:"Little Boat",   t:"common"},
+  {id:"cake", e:"🧁", n:"Cupcake",       t:"common"},
+  {id:"duck", e:"🦆", n:"Rubber Duck",   t:"common"},
+  {id:"map",  e:"🗺️", n:"Old Map",       t:"common"},
+  {id:"owl",  e:"🦉", n:"Night Owl",     t:"rare"},
+  {id:"fox",  e:"🦊", n:"Clever Fox",    t:"rare"},
+  {id:"rock", e:"🚀", n:"Rocket",        t:"rare"},
+  {id:"wave", e:"🌊", n:"Big Wave",      t:"rare"},
+  {id:"lion", e:"🦁", n:"Brave Lion",    t:"rare"},
+  {id:"tree", e:"🌳", n:"Story Tree",    t:"rare"},
+  {id:"key",  e:"🗝️", n:"Secret Key",    t:"rare"},
+  {id:"moon", e:"🌙", n:"Moon Reader",   t:"rare"},
+  {id:"bolt", e:"⚡", n:"Lightning",     t:"rare"},
+  {id:"whal", e:"🐳", n:"Whale",         t:"rare"},
+  {id:"drag", e:"🐉", n:"Dragon",        t:"legend"},
+  {id:"crwn", e:"👑", n:"Story Crown",   t:"legend"},
+  {id:"uni",  e:"🦄", n:"Unicorn",       t:"legend"},
+  {id:"comet",e:"☄️", n:"Comet",         t:"legend"},
+  {id:"trophy",e:"🏆",n:"Grand Prize",   t:"legend"}
+];
+const TIER_LABEL = { common:"Sticker", rare:"Rare find!", legend:"LEGENDARY!" };
+const RANKS = [
+  [0,"First Pages"], [10,"Page Turner"], [25,"Chapter Champ"],
+  [50,"Story Hunter"], [90,"Book Explorer"], [150,"Master Reader"]
+];
+function rankFor(stars){ let r = RANKS[0][1]; for(const [n,name] of RANKS) if(stars >= n) r = name; return r; }
+
+/* Better answers, not more pages, shift the odds toward the good stickers. */
+function rollSticker(pct, bestStreak){
+  const legend = 6 + (pct >= .9 ? 8 : 0) + bestStreak * 3;
+  const rare   = 26 + (pct >= .7 ? 10 : 0);
+  const n = Math.random() * 100;
+  const tier = n < legend ? "legend" : n < legend + rare ? "rare" : "common";
+  const pool = STICKERS.filter(s => s.t === tier);
+  const fresh = pool.filter(s => !SAVE.stickers[s.id]);
+  const pick = (fresh.length ? fresh : pool)[Math.floor(Math.random() * (fresh.length ? fresh.length : pool.length))];
+  const isNew = !SAVE.stickers[pick.id];
+  SAVE.stickers[pick.id] = (SAVE.stickers[pick.id] || 0) + 1;
+  return { ...pick, isNew };
+}
+
 const $ = id => document.getElementById(id);
 const show = (id, on) => $(id).classList.toggle("hidden", !on);
 
@@ -517,7 +648,8 @@ Write 5 comprehension questions about it for a ${S.age} year old.
 
 Reply with ONLY this JSON, no other words and no markdown fences:
 [{"q":"the question","key":"what a good answer includes"}]` }], 1000);
-    S.questions = parseJSON(raw); S.qi = 0; S.stars = 0;
+    S.questions = parseJSON(raw); S.qi = 0; S.stars = 0; S.streak = 0; S.bestStreak = 0;
+    renderCombo();
     st.classList.add("hidden");
     show("readScreen", false); show("quizScreen", true);
     renderQuestion();
@@ -567,10 +699,15 @@ Reply with ONLY this JSON, no other words and no markdown fences:
 {"score":2,"note":"..."}` }]);
     const r = parseJSON(raw);
     S.stars += r.score;
+    if(r.score === 2){ S.streak++; S.bestStreak = Math.max(S.bestStreak, S.streak); }
+    else { S.streak = 0; }
+    renderCombo();
+    const hype = S.streak >= 5 ? "🔥 UNSTOPPABLE! " : S.streak === 4 ? "🔥 On fire! " :
+                 S.streak === 3 ? "⚡ Three in a row! " : S.streak === 2 ? "✨ Two in a row! " : "";
     fb.className = "feedback " + (r.score === 2 ? "yes" : "close");
-    fb.innerHTML = (r.score === 2 ? "🌟 " : "💡 ") + r.note +
+    fb.innerHTML = (r.score === 2 ? hype + "🌟 " : "💡 ") + r.note +
       '<div class="stars">' + "★".repeat(r.score) + "☆".repeat(2 - r.score) + "</div>";
-    const u = new Utter(r.note); u.voice = S.voice; u.rate = S.rate; SS.speak(u);
+    const u = new Utter((hype ? hype.replace(/[🔥⚡✨]/g,"") : "") + r.note); u.voice = S.voice; u.rate = S.rate; SS.speak(u);
     show("nextRow", true);
   }catch(err){
     fb.className = "feedback close";
@@ -588,13 +725,62 @@ $("nextBtn").onclick = () => {
   $("doneTitle").textContent = pct >= .8 ? "You nailed it!" : pct >= .5 ? "Nice reading!" : "Chapter finished!";
   $("doneSub").textContent = `You read ${S.pages.length} page${S.pages.length>1?"s":""} and earned ${S.stars} out of ${max} stars.`;
   $("doneStars").textContent = "★".repeat(S.stars) + "☆".repeat(max - S.stars);
-  const u = new Utter($("doneTitle").textContent + " " + $("doneSub").textContent);
+
+  SAVE.stars += S.stars; SAVE.chapters++; SAVE.best = Math.max(SAVE.best, S.bestStreak);
+  const got = rollSticker(pct, S.bestStreak);
+  persist();
+  $("reveal").innerHTML =
+    `<div class="card-sticker"><span class="emoji">${got.e}</span>
+     <div class="nm">${got.n}</div>
+     <div class="tier">${TIER_LABEL[got.t]}</div>
+     ${got.isNew ? '<div class="newbadge">NEW FOR YOUR BOOK</div>' : '<div class="tier" style="margin-top:6px;opacity:.7">You have 2 of these now</div>'}</div>`;
+  show("reveal", true);
+
+  const streakLine = S.bestStreak >= 3 ? ` Your best streak was ${S.bestStreak} in a row!` : "";
+  const u = new Utter($("doneTitle").textContent + " " + $("doneSub").textContent + streakLine +
+    ` You got a ${got.n} sticker.`);
   u.voice = S.voice; u.rate = S.rate; SS.speak(u);
 };
 
+/* ---------------- combo meter + sticker book ---------------- */
+function renderCombo(){
+  const box = $("combo");
+  const lit = Math.min(S.streak, 5);
+  let html = "";
+  for(let i = 0; i < 5; i++) html += `<div class="pip${i < lit ? " lit" : ""}"></div>`;
+  if(S.streak >= 2){
+    const w = S.streak >= 5 ? "UNSTOPPABLE" : S.streak === 4 ? "ON FIRE" : S.streak === 3 ? "TRIPLE" : "DOUBLE";
+    html += `<div class="word">${w}!</div>`;
+  }
+  box.innerHTML = html;
+}
+function renderBook(){
+  $("rankName").textContent = rankFor(SAVE.stars);
+  const have = Object.keys(SAVE.stickers).length;
+  $("tally").innerHTML =
+    `<span>${have} / ${STICKERS.length} stickers</span>` +
+    `<span>${SAVE.chapters} chapter${SAVE.chapters === 1 ? "" : "s"}</span>` +
+    `<span>${SAVE.stars} stars</span>` +
+    `<span>best streak ${SAVE.best}</span>`;
+  $("book").innerHTML = STICKERS.map(s => {
+    const c = SAVE.stickers[s.id] || 0;
+    return `<div class="slot ${c ? "have" : "locked"}">
+      <span class="e">${c ? s.e : "❓"}</span>
+      <span class="n">${c ? s.n : "???"}</span>
+      ${c > 1 ? `<span class="dup">×${c}</span>` : ""}
+    </div>`;
+  }).join("");
+}
+let bookFrom = "setupScreen";
+function openBook(from){ bookFrom = from; renderBook(); show(from, false); show("bookScreen", true); }
+$("bookBtn").onclick  = () => openBook("setupScreen");
+$("bookBtn2").onclick = () => openBook("doneScreen");
+$("closeBookBtn").onclick = () => { show("bookScreen", false); show(bookFrom, true); };
+
 $("backToRead").onclick = () => { stopReading(); show("quizScreen", false); show("readScreen", true); $("quizBtn").disabled = false; };
 $("newChapterBtn").onclick = () => {
-  S.pages = []; S.questions = []; S.qi = 0; S.stars = 0;
+  S.pages = []; S.questions = []; S.qi = 0; S.stars = 0; S.streak = 0; S.bestStreak = 0;
+  show("reveal", false);
   $("stamps").innerHTML = '<div class="empty">No stamps yet. Every page you read puts a stamp on your card.</div>';
   $("stampCount").textContent = "0";
   $("quizBtn").disabled = true; $("quizBtn").textContent = "✅ Done with the chapter — ask me questions";
