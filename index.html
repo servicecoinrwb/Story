@@ -218,6 +218,37 @@ footer{text-align:center;font-size:12px;color:rgba(255,251,242,.4);padding:8px 0
 }
 .tally{display:flex;gap:14px;font-family:"Courier Prime",monospace;font-size:12px;color:rgba(36,27,74,.65);margin:4px 0 14px;flex-wrap:wrap}
 
+/* ---------- reader profiles ---------- */
+.who{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:12px}
+.who .person{
+  background:var(--paper);border:3px solid var(--sun);border-radius:16px;
+  padding:14px 6px;text-align:center;cursor:pointer;box-shadow:3px 4px 0 rgba(36,27,74,.2);
+  transition:transform .1s;
+}
+.who .person:active{transform:translateY(3px)}
+.who .person .av{font-size:40px;line-height:1.1;display:block}
+.who .person .nm{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:16px;margin-top:5px;color:var(--ink)}
+.who .person .meta{font-family:"Courier Prime",monospace;font-size:10px;color:rgba(36,27,74,.55);margin-top:2px}
+.who .person.add{border-style:dashed;border-color:rgba(36,27,74,.3);background:transparent;box-shadow:none}
+.who .person.add .av{opacity:.45}
+.who .person.add .nm{color:rgba(36,27,74,.6)}
+.avpick{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:10px 0 4px}
+.avpick button{
+  font-size:26px;padding:8px 0;border-radius:12px;cursor:pointer;
+  border:3px solid transparent;background:rgba(36,27,74,.07);
+}
+.avpick button.on{border-color:var(--sun);background:var(--paper)}
+input[type=text].namebox{
+  width:100%;border:2.5px solid rgba(36,27,74,.25);border-radius:12px;padding:13px;
+  font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:19px;color:var(--ink);background:#fff;
+}
+input[type=text].namebox:focus{outline:0;border-color:var(--sky)}
+.whoami{
+  display:flex;align-items:center;gap:7px;font-size:13px;
+  color:rgba(255,251,242,.75);margin-top:6px
+}
+.whoami b{color:var(--sun)}
+
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 </head>
@@ -232,8 +263,28 @@ footer{text-align:center;font-size:12px;color:rgba(255,251,242,.4);padding:8px 0
   <div class="cardno mono">CARD No.<br><span id="cardNo">000-000</span></div>
 </header>
 
+<!-- ================= WHO'S READING ================= -->
+<section id="whoScreen">
+  <div class="card">
+    <h2>Who's reading today?</h2>
+    <p class="sub">Everyone gets their own sticker book. Tap your picture.</p>
+    <div class="who" id="whoList"></div>
+  </div>
+
+  <div class="card hidden" id="newReaderCard">
+    <h2>New reader</h2>
+    <p class="sub">Pick a picture and type a name.</p>
+    <div class="avpick" id="avPick"></div>
+    <input type="text" class="namebox" id="nameBox" placeholder="Name" maxlength="14" autocomplete="off">
+    <div class="btn-row">
+      <button class="btn ghost small" id="cancelNew" style="color:var(--ink);border-color:rgba(36,27,74,.3)">Cancel</button>
+      <button class="btn mint" id="saveNew">Save</button>
+    </div>
+  </div>
+</section>
+
 <!-- ================= SETUP ================= -->
-<section id="setupScreen">
+<section id="setupScreen" class="hidden">
   <div class="card dark">
     <h2>Get ready to read</h2>
     <p class="sub">Pick who reads out loud and how old you are. You can change these any time.</p>
@@ -258,6 +309,7 @@ footer{text-align:center;font-size:12px;color:rgba(255,251,242,.4);padding:8px 0
     </div>
     <button class="btn mint" id="startBtn" style="margin-top:16px">Start reading</button>
     <button class="btn ghost small" id="bookBtn" style="margin-top:10px">🏅 My sticker book</button>
+    <div class="whoami">Reading as <b id="whoAmI">—</b> · <a href="#" id="switchBtn" style="color:var(--sky)">switch reader</a></div>
   </div>
 </section>
 
@@ -391,15 +443,32 @@ const store = {
   get(k, d){ try{ const v = localStorage.getItem("storystamp:" + k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
   set(k, v){ try{ localStorage.setItem("storystamp:" + k, JSON.stringify(v)); }catch(e){} }
 };
-const SAVE = {
-  stickers: store.get("stickers", {}),   // { id: count }
-  stars:    store.get("stars", 0),
-  chapters: store.get("chapters", 0),
-  best:     store.get("best", 0)
-};
+
+/* Each reader keeps a separate sticker book and reading age, so a 5 year old
+   and a 9 year old can share one tablet without sharing questions or progress. */
+const AVATARS = ["🦖","🦄","🐯","🐧","🦊","🐙","🐸","🐼","🦋","🚀","⚽","🌈"];
+const P = { list: store.get("profiles", []), id: null, name: "", emoji: "🦖" };
+let SAVE = { stickers:{}, stars:0, chapters:0, best:0 };
+
+function loadProfile(id){
+  const p = P.list.find(x => x.id === id);
+  if(!p) return;
+  P.id = p.id; P.name = p.name; P.emoji = p.emoji;
+  SAVE = {
+    stickers: store.get(id + ":stickers", {}),
+    stars:    store.get(id + ":stars", 0),
+    chapters: store.get(id + ":chapters", 0),
+    best:     store.get(id + ":best", 0)
+  };
+  S.age = p.age || "7-8";
+  store.set("lastReader", id);
+  $("whoAmI").textContent = p.emoji + " " + p.name;
+  $("ageSel").value = S.age;
+}
 function persist(){
-  store.set("stickers", SAVE.stickers); store.set("stars", SAVE.stars);
-  store.set("chapters", SAVE.chapters); store.set("best", SAVE.best);
+  if(!P.id) return;
+  store.set(P.id + ":stickers", SAVE.stickers); store.set(P.id + ":stars", SAVE.stars);
+  store.set(P.id + ":chapters", SAVE.chapters); store.set(P.id + ":best", SAVE.best);
 }
 
 /* Stickers are earned for understanding the chapter, never for page count —
@@ -531,7 +600,6 @@ $("rateSel").oninput = e => {
   S.rate = parseFloat(e.target.value);
   $("rateLbl").textContent = S.rate < 0.78 ? "nice and slow" : S.rate > 1.05 ? "speedy" : "just right";
 };
-$("ageSel").onchange = e => S.age = e.target.value;
 $("startBtn").onclick = () => { unlockSpeech(); show("setupScreen", false); show("readScreen", true); startCamera(); };
 
 /* ---------------- camera ---------------- */
@@ -755,7 +823,7 @@ function renderCombo(){
   box.innerHTML = html;
 }
 function renderBook(){
-  $("rankName").textContent = rankFor(SAVE.stars);
+  $("rankName").textContent = P.emoji + " " + P.name + " — " + rankFor(SAVE.stars);
   const have = Object.keys(SAVE.stickers).length;
   $("tally").innerHTML =
     `<span>${have} / ${STICKERS.length} stickers</span>` +
@@ -776,6 +844,62 @@ function openBook(from){ bookFrom = from; renderBook(); show(from, false); show(
 $("bookBtn").onclick  = () => openBook("setupScreen");
 $("bookBtn2").onclick = () => openBook("doneScreen");
 $("closeBookBtn").onclick = () => { show("bookScreen", false); show(bookFrom, true); };
+
+/* ---------------- readers ---------------- */
+function renderWho(){
+  const box = $("whoList");
+  box.innerHTML = P.list.map(p => `
+    <div class="person" data-id="${p.id}">
+      <span class="av">${p.emoji}</span>
+      <span class="nm">${p.name}</span>
+      <span class="meta">${Object.keys(store.get(p.id + ":stickers", {})).length}/${STICKERS.length} stickers</span>
+    </div>`).join("") + `
+    <div class="person add" id="addPerson">
+      <span class="av">＋</span><span class="nm">New reader</span>
+    </div>`;
+  box.querySelectorAll(".person[data-id]").forEach(el => {
+    el.onclick = () => { loadProfile(el.dataset.id); show("whoScreen", false); show("setupScreen", true); };
+  });
+  $("addPerson").onclick = () => { show("newReaderCard", true); $("nameBox").focus(); };
+}
+
+let newAv = AVATARS[0];
+$("avPick").innerHTML = AVATARS.map((a,i) => `<button data-a="${a}" class="${i===0?"on":""}">${a}</button>`).join("");
+$("avPick").querySelectorAll("button").forEach(b => {
+  b.onclick = () => {
+    $("avPick").querySelectorAll("button").forEach(x => x.classList.remove("on"));
+    b.classList.add("on"); newAv = b.dataset.a;
+  };
+});
+$("cancelNew").onclick = () => { show("newReaderCard", false); $("nameBox").value = ""; };
+$("saveNew").onclick = () => {
+  const name = $("nameBox").value.trim();
+  if(!name){ $("nameBox").focus(); return; }
+  const p = { id: "r" + Date.now().toString(36), name, emoji: newAv, age: "7-8" };
+  P.list.push(p); store.set("profiles", P.list);
+  $("nameBox").value = ""; show("newReaderCard", false);
+  loadProfile(p.id);
+  show("whoScreen", false); show("setupScreen", true);
+};
+$("switchBtn").onclick = e => {
+  e.preventDefault(); stopReading();
+  renderWho(); show("setupScreen", false); show("whoScreen", true);
+};
+
+/* Age lives on the reader, so the questions match whoever is holding it. */
+$("ageSel").onchange = e => {
+  S.age = e.target.value;
+  const p = P.list.find(x => x.id === P.id);
+  if(p){ p.age = S.age; store.set("profiles", P.list); }
+};
+
+/* ---------------- start ---------------- */
+renderWho();
+const last = store.get("lastReader", null);
+if(last && P.list.some(p => p.id === last)){
+  loadProfile(last);
+  show("whoScreen", false); show("setupScreen", true);
+}
 
 $("backToRead").onclick = () => { stopReading(); show("quizScreen", false); show("readScreen", true); $("quizBtn").disabled = false; };
 $("newChapterBtn").onclick = () => {
