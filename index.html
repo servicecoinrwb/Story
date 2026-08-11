@@ -452,11 +452,40 @@ async function askClaude(content, maxTokens = 1000){
   }
   throw new Error(lastErr || "request failed");
 }
+/* Models occasionally emit a literal newline or tab inside a JSON string,
+   which is invalid and blows up JSON.parse. Walk the text and escape any
+   control characters that sit inside a string before parsing. */
+function repairJSON(s){
+  let out = "", inStr = false, esc = false;
+  for(const ch of s){
+    if(esc){ out += ch; esc = false; continue; }
+    if(ch === "\\"){ out += ch; esc = true; continue; }
+    if(ch === '"'){ inStr = !inStr; out += ch; continue; }
+    if(inStr && ch === "\n"){ out += "\\n"; continue; }
+    if(inStr && ch === "\r"){ out += "\\r"; continue; }
+    if(inStr && ch === "\t"){ out += "\\t"; continue; }
+    out += ch;
+  }
+  return out;
+}
 function parseJSON(raw){
   const clean = raw.replace(/```json|```/g, "").trim();
-  const s = clean.indexOf("{") === -1 ? clean.indexOf("[") : Math.min(...[clean.indexOf("{"), clean.indexOf("[")].filter(i => i > -1));
+  const starts = [clean.indexOf("{"), clean.indexOf("[")].filter(i => i > -1);
+  const s = starts.length ? Math.min(...starts) : -1;
   const e = Math.max(clean.lastIndexOf("}"), clean.lastIndexOf("]"));
-  return JSON.parse(s > -1 && e > -1 ? clean.slice(s, e + 1) : clean);
+  const body = (s > -1 && e > s) ? clean.slice(s, e + 1) : clean;
+  try{ return JSON.parse(body); }
+  catch(err){ return JSON.parse(repairJSON(body)); }
+}
+/* One retry with a blunter instruction, since a malformed reply is usually
+   a one-off rather than a persistent misunderstanding. */
+async function askJSON(content, maxTokens = 1000){
+  try{
+    return parseJSON(await askClaude(content, maxTokens));
+  }catch(err){
+    const nudge = content.concat([{ type:"text", text:"Your last reply was not valid JSON. Reply again with ONLY the JSON, no commentary, no markdown fences." }]);
+    return parseJSON(await askClaude(nudge, maxTokens));
+  }
 }
 
 /* ---------------- state ---------------- */
@@ -716,22 +745,20 @@ async function transcribe(b64, media){
 Rules:
 - Include only the story text. Skip page numbers, headers, publisher notes, and any words that are part of an illustration label.
 - Keep the original wording, spelling, and punctuation. Do not summarize, simplify, or add anything.
-- If the photo is too blurry or has no readable text, set "text" to "" and explain in "problem".
-
-Reply with ONLY this JSON, no other words and no markdown fences:
-{"text":"the page text here","problem":null}` }
+- Output the page text and nothing else. No preamble, no quotes around it, no markdown.
+- If the photo is too blurry or has no readable text, output exactly: NO_TEXT` }
     ]);
-    const out = parseJSON(raw);
-    if(!out.text || !out.text.trim()){
+    const pageText = raw.trim();
+    if(!pageText || /^NO_TEXT\b/i.test(pageText)){
       st.className = "status err"; st.style.color = "#B3283C";
-      st.textContent = "😕 " + (out.problem || "I couldn't read that one.") + " Try again with more light and hold the phone still.";
+      st.textContent = "😕 I couldn't read that one. Try again with more light, and hold the phone still until it beeps.";
       return;
     }
-    S.pages.push(out.text.trim());
+    S.pages.push(pageText);
     addStamp(S.pages.length);
     st.classList.add("hidden");
     show("textCard", true);
-    readAloud(out.text.trim(), $("pageText"));
+    readAloud(pageText, $("pageText"));
     $("quizBtn").disabled = false;
     $("quizBtn").textContent = `✅ Done with the chapter — ask me questions (${S.pages.length} page${S.pages.length>1?"s":""})`;
   }catch(err){
@@ -763,7 +790,7 @@ $("quizBtn").onclick = async () => {
   st.innerHTML = '<span class="spin"></span>Thinking up some questions…';
   $("quizBtn").disabled = true;
   try{
-    const raw = await askClaude([{ type:"text", text:
+    const questions = await askJSON([{ type:"text", text:
 `Here is a chapter a ${S.age} year old just read out loud:
 
 """
@@ -779,7 +806,7 @@ Write 5 comprehension questions about it for a ${S.age} year old.
 
 Reply with ONLY this JSON, no other words and no markdown fences:
 [{"q":"the question","key":"what a good answer includes"}]` }], 1000);
-    S.questions = parseJSON(raw); S.qi = 0; S.stars = 0; S.streak = 0; S.bestStreak = 0;
+    S.questions = questions; S.qi = 0; S.stars = 0; S.streak = 0; S.bestStreak = 0;
     renderCombo();
     st.classList.add("hidden");
     show("readScreen", false); show("quizScreen", true);
@@ -811,7 +838,7 @@ $("submitBtn").onclick = async () => {
   const fb = $("feedback"); fb.className = "feedback close"; fb.classList.remove("hidden");
   fb.innerHTML = '<span class="spin"></span>Checking…';
   try{
-    const raw = await askClaude([{ type:"text", text:
+    const r = await askJSON([{ type:"text", text:
 `A ${S.age} year old read this chapter:
 
 """
@@ -828,7 +855,6 @@ Judge it kindly. Spelling and grammar do not matter at all — only whether they
 
 Reply with ONLY this JSON, no other words and no markdown fences:
 {"score":2,"note":"..."}` }]);
-    const r = parseJSON(raw);
     S.stars += r.score;
     if(r.score === 2){ S.streak++; S.bestStreak = Math.max(S.bestStreak, S.streak); }
     else { S.streak = 0; }
