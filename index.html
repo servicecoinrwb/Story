@@ -100,10 +100,28 @@ header h1 em{font-style:normal;color:var(--sun)}
 .btn.sky:active{box-shadow:0 1px 0 #2A72B8}
 .btn.ghost{background:transparent;color:var(--paper);border:2px solid rgba(255,251,242,.35);box-shadow:none}
 .btn.ghost:active{transform:translateY(2px)}
+.btn.ghost.ink{color:var(--ink);border-color:rgba(36,27,74,.3)}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .btn-row{display:flex;gap:10px;margin-top:12px}
 .btn-row .btn{flex:1}
 .btn.small{font-size:14px;padding:11px 14px}
+.btn.back{width:auto;margin:0 0 12px}
+
+/* ---------- mode picker ---------- */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.mode{
+  font-family:inherit;text-align:left;border:0;border-radius:18px;padding:16px 14px;
+  background:var(--sun);color:var(--ink);box-shadow:0 5px 0 #C79A15;cursor:pointer;
+  display:flex;flex-direction:column;gap:2px;min-height:134px;transition:transform .08s, box-shadow .08s;
+}
+.mode:active{transform:translateY(4px);box-shadow:0 1px 0 #C79A15}
+.mode.mint{background:var(--mint);box-shadow:0 5px 0 #22A87A}
+.mode.mint:active{box-shadow:0 1px 0 #22A87A}
+.mode:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.mode .e{font-size:38px;line-height:1.1}
+.mode .t{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:19px;margin-top:6px;line-height:1.15}
+.mode .s{font-size:13px;line-height:1.35;opacity:.8}
+@media (max-width:360px){.modes{grid-template-columns:1fr}}
 
 /* ---------- reading text ---------- */
 .pagetext{
@@ -151,6 +169,76 @@ textarea:focus{outline:0;border-color:var(--sky)}
 .feedback.close{background:rgba(255,210,63,.25);border:2px solid var(--sun)}
 .stars{font-size:26px;letter-spacing:3px;margin-top:6px}
 
+/* ---------- homework: problem list ---------- */
+.probs{display:flex;flex-direction:column;gap:10px}
+.prob{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  border:2.5px solid rgba(36,27,74,.14);background:#fff;border-radius:14px;padding:12px;
+  font-family:inherit;font-size:16px;color:var(--ink);cursor:pointer;
+}
+.prob:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.prob .num{
+  flex:0 0 34px;height:34px;border-radius:50%;background:var(--grape);color:var(--paper);
+  display:flex;align-items:center;justify-content:center;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;
+}
+.prob .txt{flex:1;min-width:0;line-height:1.35;overflow-wrap:anywhere}
+.prob .badge{font-family:"Courier Prime",monospace;font-size:11px;font-weight:700;padding:4px 8px;border-radius:20px;white-space:nowrap;background:rgba(36,27,74,.08)}
+.prob.working .badge{background:rgba(74,168,255,.22)}
+.prob.solved,.prob.paper{border-color:var(--mint);cursor:default}
+.prob.solved .badge,.prob.paper .badge{background:rgba(61,217,164,.28)}
+.prob.grownup{border-color:var(--sun)}
+.prob.grownup .badge{background:rgba(255,210,63,.4)}
+
+/* ---------- homework: one problem ---------- */
+.showbox{
+  font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:34px;line-height:1.25;text-align:center;
+  background:#fff;border:2.5px dashed rgba(36,27,74,.22);border-radius:14px;padding:14px;margin:10px 0 2px;overflow-wrap:anywhere;
+}
+.showbox.long{font-size:22px}
+.visual{
+  background:rgba(74,168,255,.12);border-radius:14px;padding:12px;margin:4px 0 12px;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;
+}
+.visual .grp{display:flex;flex-wrap:wrap;gap:4px;max-width:210px;justify-content:center}
+.visual .grp span{font-size:28px;line-height:1}
+.visual .grp span.gone{opacity:.22;filter:grayscale(1)}
+.visual .op{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:30px;color:var(--ink)}
+.visual .cap{flex-basis:100%;text-align:center;font-size:14px;color:rgba(36,27,74,.72)}
+.frame{display:grid;grid-template-columns:repeat(5,32px);gap:4px;background:var(--ink);padding:4px;border-radius:8px}
+.frame i{width:32px;height:32px;background:#fff;border-radius:4px;display:flex;align-items:center;justify-content:center}
+.frame i::after{content:"";width:20px;height:20px;border-radius:50%}
+.frame i.a::after{background:var(--stamp)}
+.frame i.b::after{background:var(--sky)}
+.frame i.x::after{background:rgba(36,27,74,.18)}
+.line{display:flex;overflow-x:auto;gap:2px;padding:34px 4px 4px;max-width:100%}
+.line button{
+  position:relative;flex:0 0 32px;height:42px;border:0;border-top:4px solid var(--ink);background:transparent;
+  font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:14px;color:var(--ink);padding-top:6px;cursor:pointer;
+}
+.line button.start{color:var(--stamp)}
+.line button.frog::before{content:"🐸";position:absolute;top:-32px;left:50%;transform:translateX(-50%);font-size:24px}
+.chunks{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.chunks span{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:34px;padding:6px 12px;border-radius:10px;color:var(--ink)}
+.chunks span:nth-child(odd){background:rgba(255,210,63,.6)}
+.chunks span:nth-child(even){background:rgba(61,217,164,.45)}
+.ladder{display:flex;align-items:center;gap:6px;margin:4px 0 2px;flex-wrap:wrap}
+.ladder i{width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(36,27,74,.22)}
+.ladder i.on{background:var(--sky);border-color:#2A72B8}
+.ladder .lt{font-size:13px;color:rgba(36,27,74,.72);margin-left:4px;flex:1;min-width:170px}
+.bubble{display:flex;gap:10px;align-items:flex-start;background:rgba(61,217,164,.16);border:2px solid var(--mint);border-radius:14px;padding:12px;margin:12px 0}
+.bubble .av{font-size:32px;line-height:1}
+.bubble p{margin:0;font-size:18px;line-height:1.5}
+
+/* ---------- grown-up notes ---------- */
+.day{font-family:"Courier Prime",monospace;font-size:13px;font-weight:700;margin:16px 0 6px;color:rgba(36,27,74,.62)}
+.note{border-left:5px solid var(--mint);background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:15px;line-height:1.45}
+.note.hints{border-color:var(--sky)}
+.note.walked{border-color:var(--stamp)}
+.note.grownup{border-color:var(--sun)}
+.note.paper{border-color:rgba(36,27,74,.2)}
+.note .res{font-weight:700;font-size:13px}
+.note .meta{font-size:13px;color:rgba(36,27,74,.68);margin-top:3px}
+
 /* ---------- misc ---------- */
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 label.field{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,251,242,.6);display:block;margin-bottom:5px}
@@ -167,6 +255,7 @@ input[type=range]{padding:0;height:34px;border:0;background:transparent;accent-c
 .status.err{color:#FFB3BE}
 .hidden{display:none !important}
 .spin{display:inline-block;width:15px;height:15px;border:3px solid rgba(255,251,242,.3);border-top-color:var(--sun);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:7px}
+.spin.dark{border-color:rgba(36,27,74,.18);border-top-color:var(--stamp)}
 @keyframes sp{to{transform:rotate(360deg)}}
 .bigstamp{
   border:5px solid var(--stamp);color:var(--stamp);border-radius:12px;
@@ -174,7 +263,7 @@ input[type=range]{padding:0;height:34px;border:0;background:transparent;accent-c
   text-align:center;padding:16px;transform:rotate(-7deg);margin:22px auto;max-width:300px;
   letter-spacing:.02em;animation:thump .4s cubic-bezier(.2,1.5,.4,1);
 }
-.bigstamp small{display:block;font-family:"Courier Prime",monospace;font-size:11px;letter-spacing:.2em;margin-top:5px;font-weight:400}
+.bigstamp small{display:block;font-family:"Courier Prime",monospace;font-size:11px;letter-spacing:.2em;margin-top:5px;font-weight:400;overflow-wrap:anywhere}
 footer{text-align:center;font-size:12px;color:rgba(255,251,242,.4);padding:8px 0 0}
 /* ---------- combo meter ---------- */
 .combo{
@@ -245,7 +334,7 @@ input[type=text].namebox{
 input[type=text].namebox:focus{outline:0;border-color:var(--sky)}
 .whoami{
   display:flex;align-items:center;gap:7px;font-size:13px;
-  color:rgba(255,251,242,.75);margin-top:6px
+  color:rgba(255,251,242,.75);margin-top:10px;flex-wrap:wrap
 }
 .whoami b{color:var(--sun)}
 
@@ -258,15 +347,15 @@ input[type=text].namebox:focus{outline:0;border-color:var(--sky)}
 <header>
   <div>
     <h1>Story <em>Stamp</em></h1>
-    <div class="tagline">Point · Listen · Answer</div>
+    <div class="tagline">Read · Solve · Stamp</div>
   </div>
   <div class="cardno mono">CARD No.<br><span id="cardNo">000-000</span></div>
 </header>
 
-<!-- ================= WHO'S READING ================= -->
+<!-- ================= WHO'S HERE ================= -->
 <section id="whoScreen">
   <div class="card">
-    <h2>Who's reading today?</h2>
+    <h2>Who's here today?</h2>
     <p class="sub">Everyone gets their own sticker book. Tap your picture.</p>
     <div class="who" id="whoList"></div>
   </div>
@@ -277,24 +366,24 @@ input[type=text].namebox:focus{outline:0;border-color:var(--sky)}
     <div class="avpick" id="avPick"></div>
     <input type="text" class="namebox" id="nameBox" placeholder="Name" maxlength="14" autocomplete="off">
     <div class="btn-row">
-      <button class="btn ghost small" id="cancelNew" style="color:var(--ink);border-color:rgba(36,27,74,.3)">Cancel</button>
+      <button class="btn ghost small ink" id="cancelNew">Cancel</button>
       <button class="btn mint" id="saveNew">Save</button>
     </div>
   </div>
 </section>
 
-<!-- ================= SETUP ================= -->
+<!-- ================= HOME / SETUP ================= -->
 <section id="setupScreen" class="hidden">
   <div class="card dark">
-    <h2>Get ready to read</h2>
-    <p class="sub">Pick who reads out loud and how old you are. You can change these any time.</p>
-    <div class="row">
+    <h2>What are we doing?</h2>
+    <p class="sub">The voice, age, and speed work for both. You can change them any time.</p>
+    <div class="row" id="voiceRow">
       <div class="field-wrap">
-        <label class="field" for="voiceSel">Reading voice</label>
+        <label class="field" for="voiceSel">Voice</label>
         <select id="voiceSel"><option>Loading voices…</option></select>
       </div>
       <div class="field-wrap">
-        <label class="field" for="ageSel">Reader age</label>
+        <label class="field" for="ageSel">Age</label>
         <select id="ageSel">
           <option value="5-6">5 to 6</option>
           <option value="7-8" selected>7 to 8</option>
@@ -303,34 +392,44 @@ input[type=text].namebox:focus{outline:0;border-color:var(--sky)}
         </select>
       </div>
     </div>
-    <div style="margin-top:12px">
-      <label class="field" for="rateSel">Reading speed — <span id="rateLbl">just right</span></label>
+    <div style="margin-top:12px" id="rateWrap">
+      <label class="field" for="rateSel">Speed: <span id="rateLbl">just right</span></label>
       <input type="range" id="rateSel" min="0.6" max="1.3" step="0.05" value="0.9">
     </div>
-    <button class="btn mint" id="startBtn" style="margin-top:16px">Start reading</button>
-    <button class="btn ghost small" id="bookBtn" style="margin-top:10px">🏅 My sticker book</button>
-    <div class="whoami">Reading as <b id="whoAmI">—</b> · <a href="#" id="switchBtn" style="color:var(--sky)">switch reader</a></div>
+    <div class="modes" id="modes">
+      <button class="mode" id="startBtn">
+        <span class="e">📖</span><span class="t">Read a book</span>
+        <span class="s">Point at a page and hear it read</span>
+      </button>
+      <button class="mode mint" id="hwBtn">
+        <span class="e">✏️</span><span class="t">Homework help</span>
+        <span class="s">Snap your worksheet and figure it out together</span>
+      </button>
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost small" id="bookBtn">🏅 My sticker book</button>
+      <button class="btn ghost small" id="notesBtn">🙋 Grown-up notes</button>
+    </div>
+    <div class="whoami">Using it now: <b id="whoAmI">—</b> <a href="#" id="switchBtn" style="color:var(--sky)">switch</a></div>
   </div>
 </section>
 
 <!-- ================= READ ================= -->
 <section id="readScreen" class="hidden">
+  <button class="btn ghost small back" id="readHome">← Home</button>
   <div class="card">
     <div class="finder" id="finder">
       <video id="video" playsinline muted autoplay class="hidden"></video>
       <img id="shot" class="hidden" alt="The page you just took a picture of">
-      <div class="placeholder" id="finderMsg">
-        <span class="big">📖</span>
-        Line the book page up inside the yellow corners, then tap the button.
-      </div>
+      <div class="placeholder" id="finderMsg"></div>
       <div class="brackets"><i></i><i></i><i></i><i></i></div>
     </div>
     <div class="btn-row">
       <button class="btn" id="snapBtn">📸 Read this page</button>
     </div>
     <div class="btn-row">
-      <button class="btn ghost small" id="uploadBtn" style="color:var(--ink);border-color:rgba(36,27,74,.3)">Use a photo instead</button>
-      <button class="btn ghost small" id="retryCamBtn" style="color:var(--ink);border-color:rgba(36,27,74,.3)">Turn camera on</button>
+      <button class="btn ghost small ink" id="uploadBtn">Use a photo instead</button>
+      <button class="btn ghost small ink" id="retryCamBtn">Turn camera on</button>
     </div>
     <input type="file" id="fileInput" accept="image/*" capture="environment" class="hidden">
     <div class="status hidden" id="readStatus" style="color:var(--ink)"></div>
@@ -341,7 +440,7 @@ input[type=text].namebox:focus{outline:0;border-color:var(--sky)}
     <p class="pagetext" id="pageText"></p>
     <div class="btn-row">
       <button class="btn sky" id="againBtn">🔊 Read it again</button>
-      <button class="btn ghost small" id="stopBtn" style="color:var(--ink);border-color:rgba(36,27,74,.3);flex:0 0 96px">⏹ Stop</button>
+      <button class="btn ghost small ink" id="stopBtn" style="flex:0 0 96px">⏹ Stop</button>
     </div>
   </div>
 
@@ -378,16 +477,89 @@ input[type=text].namebox:focus{outline:0;border-color:var(--sky)}
   <button class="btn ghost small" id="backToRead">← Back to reading</button>
 </section>
 
+<!-- ================= HOMEWORK: SNAP + LIST ================= -->
+<section id="hwScreen" class="hidden">
+  <button class="btn ghost small back" id="hwHome">← Home</button>
+
+  <div class="card" id="hwSnapCard">
+    <h2>Snap your homework</h2>
+    <p class="sub">Fit the whole worksheet inside the yellow corners. Good light helps.</p>
+    <div class="finder">
+      <video id="hwVideo" playsinline muted autoplay class="hidden"></video>
+      <img id="hwShot" class="hidden" alt="The worksheet you just took a picture of">
+      <div class="placeholder" id="hwFinderMsg"></div>
+      <div class="brackets"><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn mint" id="hwSnapBtn">📸 Snap my homework</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost small ink" id="hwUploadBtn">Use a photo instead</button>
+      <button class="btn ghost small ink" id="hwRetryCamBtn">Turn camera on</button>
+    </div>
+    <input type="file" id="hwFileInput" accept="image/*" capture="environment" class="hidden">
+    <div class="status hidden" id="hwStatus" style="color:var(--ink)"></div>
+  </div>
+
+  <div class="card hidden" id="hwListCard">
+    <h2>Your problems</h2>
+    <p class="sub" id="hwListSub"></p>
+    <div class="probs" id="probs"></div>
+    <button class="btn mint hidden" id="hwFinish" style="margin-top:14px">⭐ Finish my page</button>
+    <button class="btn ghost small ink" id="hwNewPage" style="margin-top:12px">📸 Snap a different page</button>
+  </div>
+</section>
+
+<!-- ================= HOMEWORK: ONE PROBLEM ================= -->
+<section id="hwProbScreen" class="hidden">
+  <button class="btn ghost small back" id="probBack">← All my problems</button>
+
+  <div class="card" id="probCard">
+    <div class="qnum" id="probNum">Problem 1</div>
+    <div class="showbox hidden" id="probShow"></div>
+    <div class="question" id="probAsk"></div>
+    <div class="visual hidden" id="probVisual"></div>
+    <div class="ladder" id="ladder"></div>
+    <div class="bubble hidden" id="bubble"><span class="av">🦉</span><p id="bubbleText"></p></div>
+    <textarea id="hwAnswer" placeholder="Type or say your answer…"></textarea>
+    <div class="btn-row">
+      <button class="btn sky" id="hwMic">🎤 Say it</button>
+      <button class="btn" id="hwCheck">Check it</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost small ink" id="hwHint">🤔 I need a hint</button>
+      <button class="btn ghost small ink" id="hwHear">🔊 Hear it again</button>
+    </div>
+    <button class="btn ghost small ink hidden" id="hwPhoto" style="margin-top:10px">📸 Show Hoot my writing</button>
+    <input type="file" id="hwWriteFile" accept="image/*" capture="environment" class="hidden">
+  </div>
+
+  <div class="card hidden" id="gotItCard">
+    <div class="bigstamp">GOT IT<small id="gotStars"></small></div>
+    <div class="bubble"><span class="av">🦉</span><p id="gotLine"></p></div>
+    <button class="btn mint" id="hwNext">Next problem</button>
+    <button class="btn ghost small ink" id="gotList" style="margin-top:10px">See all my problems</button>
+  </div>
+
+  <div class="card hidden" id="stuckCard">
+    <h2 id="stuckTitle">Time to get a grown-up</h2>
+    <p class="sub" id="stuckSub"></p>
+    <div class="feedback close" id="stuckInfo"></div>
+    <button class="btn mint" id="stuckBack" style="margin-top:14px">Back to my problems</button>
+  </div>
+</section>
+
 <!-- ================= DONE ================= -->
 <section id="doneScreen" class="hidden">
   <div class="card">
     <h2 id="doneTitle">Chapter finished!</h2>
     <p class="sub" id="doneSub"></p>
-    <div class="bigstamp">CHECKED OUT<small id="doneStars"></small></div>
+    <div class="bigstamp"><span id="doneStamp">CHECKED OUT</span><small id="doneStars"></small></div>
     <div class="reveal hidden" id="reveal"></div>
     <button class="btn mint" id="newChapterBtn">Start a new chapter</button>
     <div class="btn-row">
-      <button class="btn ghost small" id="bookBtn2" style="color:var(--ink);border-color:rgba(36,27,74,.3)">🏅 My sticker book</button>
+      <button class="btn ghost small ink" id="bookBtn2">🏅 My sticker book</button>
+      <button class="btn ghost small ink" id="doneHome">← Home</button>
     </div>
   </div>
 </section>
@@ -402,31 +574,68 @@ input[type=text].namebox:focus{outline:0;border-color:var(--sky)}
   </div>
 </section>
 
-<footer>Story Stamp · reads real paper books out loud</footer>
+<!-- ================= GROWN-UP NOTES ================= -->
+<section id="notesScreen" class="hidden">
+  <div class="card" id="gateCard">
+    <h2>Grown-ups only</h2>
+    <p class="sub">These notes show the answers, so they're behind a quick grown-up question.</p>
+    <div class="question" id="gateQ"></div>
+    <input type="text" class="namebox" id="gateBox" inputmode="numeric" autocomplete="off" placeholder="Answer">
+    <div class="btn-row">
+      <button class="btn ghost small ink" id="gateCancel">Cancel</button>
+      <button class="btn mint" id="gateGo">Open notes</button>
+    </div>
+    <div class="status hidden" id="gateMsg" style="color:#B3283C"></div>
+  </div>
+
+  <div class="card hidden" id="notesCard">
+    <h2 id="notesTitle">Grown-up notes</h2>
+    <p class="sub">Every homework problem, newest first: what they got on their own, what took hints, and what they needed you for.</p>
+    <div id="notesList"></div>
+    <div class="btn-row">
+      <button class="btn ghost small ink" id="notesClear">Clear notes</button>
+      <button class="btn mint" id="notesClose">Done</button>
+    </div>
+  </div>
+</section>
+
+<footer>Story Stamp reads real books out loud and helps with homework without giving answers away</footer>
 </div>
 
 <canvas id="canvas" class="hidden"></canvas>
-
 <script>
 /* =======================================================================
    CONFIG — where the AI calls go.
-   Inside Claude.ai this works as-is (no key needed).
-   To host it yourself, point API_URL at your own proxy/Worker that adds
-   the x-api-key header server-side. Never put a raw API key in this file.
+   API_URL is the Cloudflare Worker that holds the key. Never put a raw API
+   key in this file.
    ======================================================================= */
-const API_URL = "https://dark-water-9e74.summer-unit-44dd.workers.dev/";
-const MODEL   = "claude-sonnet-4-6";
+const API_URL     = "https://dark-water-9e74.summer-unit-44dd.workers.dev/";
+const MODEL       = "claude-sonnet-4-6";
+const GUARD_MODEL = "claude-haiku-4-5-20251001";
 
-async function askClaude(content, maxTokens = 1000){
+/* The v2 Worker honors a system prompt and says so with X-Proxy-Version: 2.
+   Until a reply confirms that, rules are also inlined into the message, so
+   an old Worker that drops `system` can't leave the homework helper with no
+   rules at all. */
+let PROXY_V2 = null;
+
+async function askClaude(content, maxTokens = 1000, opts = {}){
   let lastErr = "";
   // 429/5xx are usually momentary. Retry quietly rather than showing a kid an error.
   for(let attempt = 0; attempt < 3; attempt++){
+    const body = { model: opts.model || MODEL, max_tokens: maxTokens, messages: [{ role:"user", content }] };
+    if(opts.system){
+      body.system = opts.system;
+      if(PROXY_V2 !== true){
+        body.messages[0].content = [{ type:"text", text:"Follow these instructions:\n" + opts.system }].concat(content);
+      }
+    }
     let res;
     try{
       res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, messages: [{ role:"user", content }] })
+        body: JSON.stringify(body)
       });
     }catch(netErr){
       lastErr = "no connection";
@@ -435,6 +644,7 @@ async function askClaude(content, maxTokens = 1000){
     }
     const text = await res.text();
     if(res.ok){
+      PROXY_V2 = res.headers.get("X-Proxy-Version") === "2";
       let data;
       try{ data = JSON.parse(text); }
       catch(e){ throw new Error("bad reply from server"); }
@@ -479,14 +689,23 @@ function parseJSON(raw){
 }
 /* One retry with a blunter instruction, since a malformed reply is usually
    a one-off rather than a persistent misunderstanding. */
-async function askJSON(content, maxTokens = 1000){
+async function askJSON(content, maxTokens = 1000, opts = {}){
   try{
-    return parseJSON(await askClaude(content, maxTokens));
+    return parseJSON(await askClaude(content, maxTokens, opts));
   }catch(err){
+    if(/no connection|^\d{3} /.test(String(err.message))) throw err;
     const nudge = content.concat([{ type:"text", text:"Your last reply was not valid JSON. Reply again with ONLY the JSON, no commentary, no markdown fences." }]);
-    return parseJSON(await askClaude(nudge, maxTokens));
+    return parseJSON(await askClaude(nudge, maxTokens, opts));
   }
 }
+
+/* ---------------- helpers ---------------- */
+const $ = id => document.getElementById(id);
+const show = (id, on) => $(id).classList.toggle("hidden", !on);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+const SCREENS = ["whoScreen","setupScreen","readScreen","quizScreen","doneScreen","bookScreen","hwScreen","hwProbScreen","notesScreen"];
+function screen(id){ SCREENS.forEach(s => show(s, s === id)); window.scrollTo(0, 0); }
 
 /* ---------------- state ---------------- */
 const S = { pages:[], questions:[], qi:0, stars:0, streak:0, bestStreak:0, voice:null, rate:0.9, age:"7-8", stream:null, busy:false };
@@ -498,11 +717,11 @@ const store = {
   set(k, v){ try{ localStorage.setItem("storystamp:" + k, JSON.stringify(v)); }catch(e){} }
 };
 
-/* Each reader keeps a separate sticker book and reading age, so a 5 year old
-   and a 9 year old can share one tablet without sharing questions or progress. */
+/* Each reader keeps a separate sticker book and age, so a 5 year old and a
+   9 year old can share one tablet without sharing questions or progress. */
 const AVATARS = ["🦖","🦄","🐯","🐧","🦊","🐙","🐸","🐼","🦋","🚀","⚽","🌈"];
 const P = { list: store.get("profiles", []), id: null, name: "", emoji: "🦖" };
-let SAVE = { stickers:{}, stars:0, chapters:0, best:0 };
+let SAVE = { stickers:{}, stars:0, chapters:0, best:0, hwPages:0 };
 
 function loadProfile(id){
   const p = P.list.find(x => x.id === id);
@@ -512,21 +731,24 @@ function loadProfile(id){
     stickers: store.get(id + ":stickers", {}),
     stars:    store.get(id + ":stars", 0),
     chapters: store.get(id + ":chapters", 0),
-    best:     store.get(id + ":best", 0)
+    best:     store.get(id + ":best", 0),
+    hwPages:  store.get(id + ":hwPages", 0)
   };
   S.age = p.age || "7-8";
   store.set("lastReader", id);
   $("whoAmI").textContent = p.emoji + " " + p.name;
   $("ageSel").value = S.age;
+  resetHomework();
 }
 function persist(){
   if(!P.id) return;
   store.set(P.id + ":stickers", SAVE.stickers); store.set(P.id + ":stars", SAVE.stars);
   store.set(P.id + ":chapters", SAVE.chapters); store.set(P.id + ":best", SAVE.best);
+  store.set(P.id + ":hwPages", SAVE.hwPages);
 }
 
-/* Stickers are earned for understanding the chapter, never for page count —
-   otherwise the fastest way to collect is to snap blurry pages and skip reading. */
+/* Stickers are earned for understanding, never for volume — otherwise the
+   fastest way to collect is to snap blurry pages and skip the thinking. */
 const STICKERS = [
   {id:"worm", e:"🐛", n:"Bookworm",     t:"common"},
   {id:"star", e:"⭐", n:"Gold Star",     t:"common"},
@@ -568,57 +790,73 @@ function rankFor(stars){ let r = RANKS[0][1]; for(const [n,name] of RANKS) if(st
 
 /* Better answers, not more pages, shift the odds toward the good stickers. */
 function rollSticker(pct, bestStreak){
-  const legend = 6 + (pct >= .9 ? 8 : 0) + bestStreak * 3;
+  const legend = 6 + (pct >= .9 ? 8 : 0) + Math.min(bestStreak, 5) * 3;
   const rare   = 26 + (pct >= .7 ? 10 : 0);
   const n = Math.random() * 100;
   const tier = n < legend ? "legend" : n < legend + rare ? "rare" : "common";
   const pool = STICKERS.filter(s => s.t === tier);
   const fresh = pool.filter(s => !SAVE.stickers[s.id]);
-  const pick = (fresh.length ? fresh : pool)[Math.floor(Math.random() * (fresh.length ? fresh.length : pool.length))];
+  const from = fresh.length ? fresh : pool;
+  const pick = from[Math.floor(Math.random() * from.length)];
   const isNew = !SAVE.stickers[pick.id];
   SAVE.stickers[pick.id] = (SAVE.stickers[pick.id] || 0) + 1;
-  return { ...pick, isNew };
+  return { ...pick, isNew, count: SAVE.stickers[pick.id] };
 }
-
-const $ = id => document.getElementById(id);
-const show = (id, on) => $(id).classList.toggle("hidden", !on);
+function stickerHTML(got){
+  return `<div class="card-sticker"><span class="emoji">${got.e}</span>
+     <div class="nm">${esc(got.n)}</div>
+     <div class="tier">${TIER_LABEL[got.t]}</div>
+     ${got.isNew ? '<div class="newbadge">NEW FOR YOUR BOOK</div>'
+                 : `<div class="tier" style="margin-top:6px;opacity:.7">You have ${got.count} of these now</div>`}</div>`;
+}
 
 $("cardNo").textContent = String(Math.floor(Math.random()*900+100)) + "-" + String(Math.floor(Math.random()*900+100));
 
 /* ---------------- speech out ----------------
    Some browsers and sandboxed frames have no speech engine at all.
-   SS/Utter are safe stand-ins so the rest of the app still runs:
-   pages are still transcribed, shown, and quizzed — just silently. */
+   SS/Utter are safe stand-ins so the rest of the app still runs,
+   just silently. */
 const TTS = !!(window.speechSynthesis && window.SpeechSynthesisUtterance);
 const SS = window.speechSynthesis || { getVoices:()=>[], speak(){}, cancel(){}, onvoiceschanged:null };
 const Utter = window.SpeechSynthesisUtterance || function(t){ this.text = t; };
 
-let queue = [], speaking = false, unlocked = false;
+let speaking = false, unlocked = false;
 function loadVoices(){
-  if(!TTS){ return; }
+  if(!TTS) return;
   const all = SS.getVoices().filter(v => v.lang && v.lang.toLowerCase().startsWith("en"));
   if(!all.length) return;
+  // Lower rank = better. Unlisted voices go to the bottom.
   const nice = ["Samantha","Google US English","Karen","Moira","Daniel","Google UK English Female","Allison","Ava","Zira"];
-  all.sort((a,b) => (nice.findIndex(n=>b.name.includes(n)) - nice.findIndex(n=>a.name.includes(n))));
+  const rank = v => { const i = nice.findIndex(n => v.name.includes(n)); return i === -1 ? 99 : i; };
+  all.sort((a,b) => rank(a) - rank(b));
+  // voiceschanged can fire more than once; keep whatever was picked.
+  const keep = S.voice && all.find(v => v.name === S.voice.name);
   const sel = $("voiceSel"); sel.innerHTML = "";
   all.forEach((v,i) => {
     const o = document.createElement("option");
     o.value = i; o.textContent = v.name.replace(/(Microsoft|Google|Apple)\s/,"") + (v.lang.includes("GB") ? " (British)" : "");
     sel.appendChild(o);
   });
-  S.voice = all[0];
+  S.voice = keep || all[0];
+  sel.value = String(all.indexOf(S.voice));
   sel.onchange = () => { S.voice = all[sel.value]; sample(); };
 }
 SS.onvoiceschanged = loadVoices; loadVoices();
 if(!TTS){
-  $("voiceSel").closest(".row").classList.add("hidden");
-  $("rateSel").parentElement.classList.add("hidden");
+  $("voiceRow").querySelector(".field-wrap").classList.add("hidden");
+  $("rateWrap").classList.add("hidden");
   const n = document.createElement("p");
   n.className = "sub";
-  n.innerHTML = "<b>Reading out loud is off in this browser.</b> Pages will still be shown on screen and you'll still get questions. Open this in Chrome or Safari on a phone or tablet to hear it read aloud.";
-  $("startBtn").before(n);
+  n.style.marginTop = "12px";
+  n.innerHTML = "<b>Talking is off in this browser.</b> Pages, questions, and homework hints still show on screen. Open this in Chrome or Safari on a phone or tablet to hear them.";
+  $("modes").before(n);
 }
-function sample(){ SS.cancel(); const u = new Utter("Hi! I'll read your book."); u.voice = S.voice; u.rate = S.rate; SS.speak(u); }
+function sample(){ say("Hi! I'll read with you."); }
+function say(text){
+  if(!TTS || !text) return;
+  SS.cancel();
+  const u = new Utter(text); u.voice = S.voice; u.rate = S.rate; SS.speak(u);
+}
 
 function unlockSpeech(){
   if(unlocked) return; unlocked = true;
@@ -629,7 +867,7 @@ function splitSentences(t){
 }
 function readAloud(text, container){
   keepAwake();
-  SS.cancel(); queue = []; speaking = true;
+  SS.cancel(); speaking = true;
   const parts = splitSentences(text);
   container.innerHTML = "";
   const spans = parts.map(p => { const s = document.createElement("span"); s.className = "sent"; s.textContent = p; container.appendChild(s); return s; });
@@ -650,10 +888,31 @@ function readAloud(text, container){
 }
 function stopReading(){ speaking = false; SS.cancel(); document.querySelectorAll(".sent.on").forEach(s => s.classList.remove("on")); }
 
+/* ---------------- speech in ---------------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+function attachMic(btnId, boxId){
+  const btn = $(btnId), box = $(boxId), label = btn.textContent;
+  if(!SR){ btn.classList.add("hidden"); return; }
+  let rec = null, listening = false;
+  btn.onclick = () => {
+    if(listening){ rec.stop(); return; }
+    rec = new SR(); rec.lang = "en-US"; rec.interimResults = true; rec.continuous = false;
+    rec.onstart = () => { listening = true; btn.textContent = "🔴 Listening… tap to stop"; };
+    rec.onresult = e => {
+      let t = ""; for(const r of e.results) t += r[0].transcript;
+      box.value = t;
+    };
+    rec.onerror = () => { box.placeholder = "The mic didn't work. Type your answer instead."; };
+    rec.onend = () => { listening = false; btn.textContent = label; };
+    SS.cancel();
+    rec.start();
+  };
+}
+
 /* ---------------- keep the screen awake ----------------
-   Nothing touches the screen while a page is being read aloud, so the phone
-   sleeps and the speech dies with it. Hold a wake lock for the session and
-   re-take it when the tab comes back (the lock is dropped on every hide). */
+   Nothing touches the screen while a page is read aloud, so the phone sleeps
+   and the speech dies with it. Hold a wake lock and re-take it when the tab
+   comes back (the lock is dropped on every hide). */
 let wakeLock = null;
 async function keepAwake(){
   try{
@@ -668,74 +927,121 @@ document.addEventListener("visibilitychange", () => {
   else stopReading();
 });
 
-/* ---------------- setup screen ---------------- */
+/* ---------------- camera (shared by reading and homework) ---------------- */
+const CAM = {
+  read: { video:"video", shot:"shot", msg:"finderMsg", retry:"retryCamBtn",
+          ready:'<span class="big">📖</span>Line the book page up inside the yellow corners, then tap the button.',
+          off:'<span class="big">📷</span>The camera isn\'t on. Tap <b>Turn camera on</b> to allow it, or tap <b>Use a photo instead</b> to pick a picture of the page.' },
+  hw:   { video:"hwVideo", shot:"hwShot", msg:"hwFinderMsg", retry:"hwRetryCamBtn",
+          ready:'<span class="big">✏️</span>Fit the whole worksheet inside the yellow corners, then tap the button.',
+          off:'<span class="big">📷</span>The camera isn\'t on. Tap <b>Turn camera on</b> to allow it, or tap <b>Use a photo instead</b> to pick a picture of the worksheet.' }
+};
+Object.values(CAM).forEach(c => { $(c.msg).innerHTML = c.ready; });
+
+async function startCamera(which = "read"){
+  const c = CAM[which];
+  try{
+    const live = S.stream && S.stream.getVideoTracks().some(t => t.readyState === "live");
+    if(!live) S.stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ideal:"environment"}, width:{ideal:1920} }, audio:false });
+    const v = $(c.video); v.srcObject = S.stream; await v.play();
+    v.classList.remove("hidden"); $(c.msg).classList.add("hidden"); $(c.shot).classList.add("hidden");
+    $(c.retry).classList.add("hidden");
+  }catch(err){
+    $(c.msg).innerHTML = c.off;
+    $(c.msg).classList.remove("hidden");
+    $(c.retry).classList.remove("hidden");
+  }
+}
+/* The camera stays off outside the snap screens, so it isn't draining the
+   battery while a kid answers questions. */
+function stopCamera(){
+  if(S.stream){ S.stream.getTracks().forEach(t => t.stop()); S.stream = null; }
+  Object.values(CAM).forEach(c => {
+    const v = $(c.video); v.srcObject = null; v.classList.add("hidden");
+    if($(c.shot).classList.contains("hidden")){ $(c.msg).innerHTML = c.ready; $(c.msg).classList.remove("hidden"); }
+  });
+}
+function captureFrame(which, edge){
+  const v = $(CAM[which].video);
+  if(v.classList.contains("hidden") || !v.videoWidth) return null;
+  const c = $("canvas"), scale = Math.min(1, edge / Math.max(v.videoWidth, v.videoHeight));
+  c.width = Math.round(v.videoWidth * scale); c.height = Math.round(v.videoHeight * scale);
+  c.getContext("2d").drawImage(v, 0, 0, c.width, c.height);
+  return c.toDataURL("image/jpeg", 0.82);
+}
+/* A photo straight off the camera roll can be 8MB, well over the API's image
+   limit. Shrink it the same way a live capture is shrunk. */
+function shrinkFile(file, edge){
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onerror = () => reject(new Error("couldn't read the file"));
+    r.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const c = $("canvas"), scale = Math.min(1, edge / Math.max(img.width, img.height));
+        c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL("image/jpeg", 0.82));
+      };
+      img.onerror = () => reject(new Error("not a picture"));
+      img.src = r.result;
+    };
+    r.readAsDataURL(file);
+  });
+}
+function showShot(which, dataUrl){
+  const c = CAM[which];
+  $(c.shot).src = dataUrl; $(c.shot).classList.remove("hidden");
+  $(c.video).classList.add("hidden"); $(c.msg).classList.add("hidden");
+}
+function statusErr(id, html){
+  const st = $(id); st.classList.remove("hidden");
+  st.className = "status err"; st.style.color = "#B3283C"; st.innerHTML = html;
+}
+function statusBusy(id, text){
+  const st = $(id); st.classList.remove("hidden");
+  st.className = "status"; st.style.color = "var(--ink)";
+  st.innerHTML = `<span class="spin dark"></span>${esc(text)}`;
+}
+
+/* ---------------- home / setup ---------------- */
 $("rateSel").oninput = e => {
   S.rate = parseFloat(e.target.value);
   $("rateLbl").textContent = S.rate < 0.78 ? "nice and slow" : S.rate > 1.05 ? "speedy" : "just right";
 };
-$("startBtn").onclick = () => { unlockSpeech(); keepAwake(); show("setupScreen", false); show("readScreen", true); startCamera(); };
+function goHome(){ stopReading(); stopCamera(); screen("setupScreen"); }
+$("startBtn").onclick = () => { unlockSpeech(); keepAwake(); screen("readScreen"); startCamera("read"); };
+$("readHome").onclick = goHome;
+$("doneHome").onclick = goHome;
 
-/* ---------------- camera ---------------- */
-async function startCamera(){
-  try{
-    S.stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ideal:"environment"}, width:{ideal:1600} }, audio:false });
-    const v = $("video"); v.srcObject = S.stream; await v.play();
-    v.classList.remove("hidden"); $("finderMsg").classList.add("hidden"); $("shot").classList.add("hidden");
-    $("retryCamBtn").classList.add("hidden");
-  }catch(err){
-    $("finderMsg").innerHTML = '<span class="big">📷</span>The camera isn\'t on. Tap <b>Turn camera on</b> to allow it, or tap <b>Use a photo instead</b> to pick a picture of the page.';
-    $("finderMsg").classList.remove("hidden");
-  }
-}
-$("retryCamBtn").onclick = startCamera;
+/* ---------------- reading: snap a page ---------------- */
+$("retryCamBtn").onclick = () => startCamera("read");
 $("uploadBtn").onclick = () => $("fileInput").click();
-$("fileInput").onchange = e => {
-  const f = e.target.files[0]; if(!f) return;
-  const r = new FileReader();
-  r.onload = () => {
-    // A photo straight off the camera roll can be 8MB, well over the API's
-    // image limit. Shrink it the same way a live capture is shrunk.
-    const img = new Image();
-    img.onload = () => {
-      const c = $("canvas"), scale = Math.min(1, 1280 / Math.max(img.width, img.height));
-      c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
-      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-      const small = c.toDataURL("image/jpeg", 0.8);
-      showShot(small);
-      transcribe(small.split(",")[1], "image/jpeg");
-    };
-    img.onerror = () => {
-      const st = $("readStatus"); st.classList.remove("hidden");
-      st.className = "status err"; st.style.color = "#B3283C";
-      st.textContent = "That file isn't a picture I can open. Try a JPG or PNG.";
-    };
-    img.src = r.result;
-  };
-  r.readAsDataURL(f);
+$("fileInput").onchange = async e => {
+  const f = e.target.files[0];
+  e.target.value = "";   // lets the same photo be picked again
+  if(!f) return;
+  try{
+    const small = await shrinkFile(f, 1280);
+    showShot("read", small);
+    transcribe(small.split(",")[1], "image/jpeg");
+  }catch(err){
+    statusErr("readStatus", "That file isn't a picture I can open. Try a JPG or PNG.");
+  }
 };
-function showShot(dataUrl){
-  $("shot").src = dataUrl; $("shot").classList.remove("hidden");
-  $("video").classList.add("hidden"); $("finderMsg").classList.add("hidden");
-}
 $("snapBtn").onclick = () => {
   unlockSpeech();
-  const v = $("video");
-  if(v.classList.contains("hidden") || !v.videoWidth){ $("fileInput").click(); return; }
-  const c = $("canvas"), scale = Math.min(1, 1280 / v.videoWidth);
-  c.width = v.videoWidth * scale; c.height = v.videoHeight * scale;
-  c.getContext("2d").drawImage(v, 0, 0, c.width, c.height);
-  const dataUrl = c.toDataURL("image/jpeg", 0.8);
-  showShot(dataUrl);
+  const dataUrl = captureFrame("read", 1280);
+  if(!dataUrl){ $("fileInput").click(); return; }
+  showShot("read", dataUrl);
   transcribe(dataUrl.split(",")[1], "image/jpeg");
 };
 
-/* ---------------- transcribe a page ---------------- */
 async function transcribe(b64, media){
   if(S.busy) return; S.busy = true;
   stopReading();
   $("snapBtn").disabled = true;
-  const st = $("readStatus"); st.className = "status"; st.style.color = "var(--ink)";
-  st.innerHTML = '<span class="spin"></span>Reading the page…';
+  statusBusy("readStatus", "Reading the page…");
   try{
     const raw = await askClaude([
       { type:"image", source:{ type:"base64", media_type:media, data:b64 } },
@@ -750,21 +1056,19 @@ Rules:
     ]);
     const pageText = raw.trim();
     if(!pageText || /^NO_TEXT\b/i.test(pageText)){
-      st.className = "status err"; st.style.color = "#B3283C";
-      st.textContent = "😕 I couldn't read that one. Try again with more light, and hold the phone still until it beeps.";
+      statusErr("readStatus", "😕 I couldn't read that one. Turn on a light, hold the phone still, and tap the button again.");
       return;
     }
     S.pages.push(pageText);
     addStamp(S.pages.length);
-    st.classList.add("hidden");
+    $("readStatus").classList.add("hidden");
     show("textCard", true);
     readAloud(pageText, $("pageText"));
     $("quizBtn").disabled = false;
-    $("quizBtn").textContent = `✅ Done with the chapter — ask me questions (${S.pages.length} page${S.pages.length>1?"s":""})`;
+    $("quizBtn").textContent = `✅ Done with the chapter — ask me questions (${plural(S.pages.length, "page")})`;
   }catch(err){
-    st.className = "status err"; st.style.color = "#B3283C";
-    st.innerHTML = "Couldn't send that page. Tap the button to try again." +
-      `<br><span style="opacity:.65;font-size:11px">${String(err.message || err)}</span>`;
+    statusErr("readStatus", "Couldn't send that page. Tap the button to try again." +
+      `<br><span style="opacity:.65;font-size:11px">${esc(err.message || err)}</span>`);
   }finally{
     S.busy = false; $("snapBtn").disabled = false;
   }
@@ -780,17 +1084,17 @@ function addStamp(n){
   box.appendChild(d);
   $("stampCount").textContent = n;
 }
-$("againBtn").onclick = () => { unlockSpeech(); readAloud(S.pages[S.pages.length-1], $("pageText")); };
+$("againBtn").onclick = () => { unlockSpeech(); if(S.pages.length) readAloud(S.pages[S.pages.length-1], $("pageText")); };
 $("stopBtn").onclick = stopReading;
 
-/* ---------------- questions ---------------- */
+/* ---------------- reading: questions ---------------- */
 $("quizBtn").onclick = async () => {
   stopReading();
   const st = $("quizStatus"); st.classList.remove("hidden"); st.className = "status";
   st.innerHTML = '<span class="spin"></span>Thinking up some questions…';
   $("quizBtn").disabled = true;
   try{
-    const questions = await askJSON([{ type:"text", text:
+    const reply = await askJSON([{ type:"text", text:
 `Here is a chapter a ${S.age} year old just read out loud:
 
 """
@@ -806,10 +1110,13 @@ Write 5 comprehension questions about it for a ${S.age} year old.
 
 Reply with ONLY this JSON, no other words and no markdown fences:
 [{"q":"the question","key":"what a good answer includes"}]` }], 1000);
-    S.questions = questions; S.qi = 0; S.stars = 0; S.streak = 0; S.bestStreak = 0;
+    const list = (Array.isArray(reply) ? reply : (reply.questions || [])).filter(q => q && q.q);
+    if(!list.length) throw new Error("no questions came back");
+    S.questions = list; S.qi = 0; S.stars = 0; S.streak = 0; S.bestStreak = 0;
     renderCombo();
     st.classList.add("hidden");
-    show("readScreen", false); show("quizScreen", true);
+    stopCamera();
+    screen("quizScreen");
     renderQuestion();
   }catch(err){
     st.className = "status err";
@@ -827,8 +1134,7 @@ function renderQuestion(){
   $("submitBtn").disabled = false;
   $("nextBtn").textContent = S.qi === S.questions.length - 1 ? "See my stars →" : "Next question →";
   unlockSpeech();
-  const u = new Utter(q.q);
-  u.voice = S.voice; u.rate = S.rate; SS.speak(u);
+  say(q.q);
 }
 
 $("submitBtn").onclick = async () => {
@@ -836,7 +1142,7 @@ $("submitBtn").onclick = async () => {
   if(!ans){ $("answerBox").focus(); return; }
   $("submitBtn").disabled = true;
   const fb = $("feedback"); fb.className = "feedback close"; fb.classList.remove("hidden");
-  fb.innerHTML = '<span class="spin"></span>Checking…';
+  fb.innerHTML = '<span class="spin dark"></span>Checking…';
   try{
     const r = await askJSON([{ type:"text", text:
 `A ${S.age} year old read this chapter:
@@ -855,16 +1161,17 @@ Judge it kindly. Spelling and grammar do not matter at all — only whether they
 
 Reply with ONLY this JSON, no other words and no markdown fences:
 {"score":2,"note":"..."}` }]);
-    S.stars += r.score;
-    if(r.score === 2){ S.streak++; S.bestStreak = Math.max(S.bestStreak, S.streak); }
+    const score = Math.max(0, Math.min(2, parseInt(r.score, 10) || 0));
+    S.stars += score;
+    if(score === 2){ S.streak++; S.bestStreak = Math.max(S.bestStreak, S.streak); }
     else { S.streak = 0; }
     renderCombo();
     const hype = S.streak >= 5 ? "🔥 UNSTOPPABLE! " : S.streak === 4 ? "🔥 On fire! " :
                  S.streak === 3 ? "⚡ Three in a row! " : S.streak === 2 ? "✨ Two in a row! " : "";
-    fb.className = "feedback " + (r.score === 2 ? "yes" : "close");
-    fb.innerHTML = (r.score === 2 ? hype + "🌟 " : "💡 ") + r.note +
-      '<div class="stars">' + "★".repeat(r.score) + "☆".repeat(2 - r.score) + "</div>";
-    const u = new Utter((hype ? hype.replace(/[🔥⚡✨]/g,"") : "") + r.note); u.voice = S.voice; u.rate = S.rate; SS.speak(u);
+    fb.className = "feedback " + (score === 2 ? "yes" : "close");
+    fb.innerHTML = (score === 2 ? hype + "🌟 " : "💡 ") + esc(r.note) +
+      '<div class="stars">' + "★".repeat(score) + "☆".repeat(2 - score) + "</div>";
+    say((hype ? hype.replace(/[🔥⚡✨]/gu,"") : "") + (r.note || ""));
     show("nextRow", true);
   }catch(err){
     fb.className = "feedback close";
@@ -877,27 +1184,47 @@ $("nextBtn").onclick = () => {
   S.qi++;
   if(S.qi < S.questions.length){ renderQuestion(); return; }
   const max = S.questions.length * 2;
-  show("quizScreen", false); show("doneScreen", true);
   const pct = S.stars / max;
-  $("doneTitle").textContent = pct >= .8 ? "You nailed it!" : pct >= .5 ? "Nice reading!" : "Chapter finished!";
-  $("doneSub").textContent = `You read ${S.pages.length} page${S.pages.length>1?"s":""} and earned ${S.stars} out of ${max} stars.`;
-  $("doneStars").textContent = "★".repeat(S.stars) + "☆".repeat(max - S.stars);
-
   SAVE.stars += S.stars; SAVE.chapters++; SAVE.best = Math.max(SAVE.best, S.bestStreak);
   const got = rollSticker(pct, S.bestStreak);
   persist();
-  $("reveal").innerHTML =
-    `<div class="card-sticker"><span class="emoji">${got.e}</span>
-     <div class="nm">${got.n}</div>
-     <div class="tier">${TIER_LABEL[got.t]}</div>
-     ${got.isNew ? '<div class="newbadge">NEW FOR YOUR BOOK</div>' : '<div class="tier" style="margin-top:6px;opacity:.7">You have 2 of these now</div>'}</div>`;
-  show("reveal", true);
-
-  const streakLine = S.bestStreak >= 3 ? ` Your best streak was ${S.bestStreak} in a row!` : "";
-  const u = new Utter($("doneTitle").textContent + " " + $("doneSub").textContent + streakLine +
-    ` You got a ${got.n} sticker.`);
-  u.voice = S.voice; u.rate = S.rate; SS.speak(u);
+  showDone({
+    title: pct >= .8 ? "You nailed it!" : pct >= .5 ? "Nice reading!" : "Chapter finished!",
+    sub: `You read ${plural(S.pages.length, "page")} and earned ${S.stars} out of ${max} stars.`,
+    stamp: "CHECKED OUT", stars: S.stars, max, got,
+    extra: S.bestStreak >= 3 ? ` Your best streak was ${S.bestStreak} in a row!` : "",
+    againLabel: "Start a new chapter", again: newChapter
+  });
 };
+
+/* ---------------- shared done screen ---------------- */
+let doneAgain = null;
+function showDone(o){
+  screen("doneScreen");
+  $("doneTitle").textContent = o.title;
+  $("doneSub").textContent = o.sub;
+  $("doneStamp").textContent = o.stamp;
+  $("doneStars").textContent = "★".repeat(o.stars) + "☆".repeat(Math.max(0, o.max - o.stars));
+  $("reveal").innerHTML = stickerHTML(o.got);
+  show("reveal", true);
+  $("newChapterBtn").textContent = o.againLabel;
+  doneAgain = o.again;
+  say(o.title + " " + o.sub + (o.extra || "") + ` You got a ${o.got.n} sticker.`);
+}
+$("newChapterBtn").onclick = () => { if(doneAgain) doneAgain(); };
+
+function newChapter(){
+  S.pages = []; S.questions = []; S.qi = 0; S.stars = 0; S.streak = 0; S.bestStreak = 0;
+  show("reveal", false);
+  $("stamps").innerHTML = '<div class="empty">No stamps yet. Every page you read puts a stamp on your card.</div>';
+  $("stampCount").textContent = "0";
+  $("quizBtn").disabled = true; $("quizBtn").textContent = "✅ Done with the chapter — ask me questions";
+  show("textCard", false); show("readStatus", false);
+  $("shot").classList.add("hidden");
+  screen("readScreen");
+  startCamera("read");
+}
+$("backToRead").onclick = () => { stopReading(); screen("readScreen"); startCamera("read"); $("quizBtn").disabled = false; };
 
 /* ---------------- combo meter + sticker book ---------------- */
 function renderCombo(){
@@ -916,38 +1243,39 @@ function renderBook(){
   const have = Object.keys(SAVE.stickers).length;
   $("tally").innerHTML =
     `<span>${have} / ${STICKERS.length} stickers</span>` +
-    `<span>${SAVE.chapters} chapter${SAVE.chapters === 1 ? "" : "s"}</span>` +
+    `<span>${plural(SAVE.chapters, "chapter")}</span>` +
+    `<span>${plural(SAVE.hwPages, "homework page")}</span>` +
     `<span>${SAVE.stars} stars</span>` +
     `<span>best streak ${SAVE.best}</span>`;
   $("book").innerHTML = STICKERS.map(s => {
     const c = SAVE.stickers[s.id] || 0;
     return `<div class="slot ${c ? "have" : "locked"}">
       <span class="e">${c ? s.e : "❓"}</span>
-      <span class="n">${c ? s.n : "???"}</span>
+      <span class="n">${c ? esc(s.n) : "???"}</span>
       ${c > 1 ? `<span class="dup">×${c}</span>` : ""}
     </div>`;
   }).join("");
 }
 let bookFrom = "setupScreen";
-function openBook(from){ bookFrom = from; renderBook(); show(from, false); show("bookScreen", true); }
+function openBook(from){ bookFrom = from; renderBook(); screen("bookScreen"); }
 $("bookBtn").onclick  = () => openBook("setupScreen");
 $("bookBtn2").onclick = () => openBook("doneScreen");
-$("closeBookBtn").onclick = () => { show("bookScreen", false); show(bookFrom, true); };
+$("closeBookBtn").onclick = () => screen(bookFrom);
 
 /* ---------------- readers ---------------- */
 function renderWho(){
   const box = $("whoList");
   box.innerHTML = P.list.map(p => `
-    <div class="person" data-id="${p.id}">
+    <div class="person" data-id="${esc(p.id)}" role="button" tabindex="0">
       <span class="av">${p.emoji}</span>
-      <span class="nm">${p.name}</span>
+      <span class="nm">${esc(p.name)}</span>
       <span class="meta">${Object.keys(store.get(p.id + ":stickers", {})).length}/${STICKERS.length} stickers</span>
     </div>`).join("") + `
-    <div class="person add" id="addPerson">
+    <div class="person add" id="addPerson" role="button" tabindex="0">
       <span class="av">＋</span><span class="nm">New reader</span>
     </div>`;
   box.querySelectorAll(".person[data-id]").forEach(el => {
-    el.onclick = () => { loadProfile(el.dataset.id); show("whoScreen", false); show("setupScreen", true); };
+    el.onclick = () => { loadProfile(el.dataset.id); screen("setupScreen"); };
   });
   $("addPerson").onclick = () => { show("newReaderCard", true); $("nameBox").focus(); };
 }
@@ -968,57 +1296,682 @@ $("saveNew").onclick = () => {
   P.list.push(p); store.set("profiles", P.list);
   $("nameBox").value = ""; show("newReaderCard", false);
   loadProfile(p.id);
-  show("whoScreen", false); show("setupScreen", true);
+  screen("setupScreen");
 };
 $("switchBtn").onclick = e => {
-  e.preventDefault(); stopReading();
-  renderWho(); show("setupScreen", false); show("whoScreen", true);
+  e.preventDefault(); stopReading(); stopCamera();
+  renderWho(); screen("whoScreen");
 };
 
-/* Age lives on the reader, so the questions match whoever is holding it. */
+/* Age lives on the reader, so questions and homework help match whoever is holding it. */
 $("ageSel").onchange = e => {
   S.age = e.target.value;
   const p = P.list.find(x => x.id === P.id);
   if(p){ p.age = S.age; store.set("profiles", P.list); }
 };
 
+/* =======================================================================
+   HOMEWORK HELP
+   1. A hidden solve call reads the worksheet and works out every answer.
+      That stays in memory and is never put on screen.
+   2. Hoot, the helper, talks to the child with the answer as private
+      reference, climbing a four-step hint ladder.
+   3. Every hint line is checked for give-aways before the child hears it:
+      a free local check first, then a quick Haiku check.
+   ======================================================================= */
+const GRADE = { "5-6":"kindergarten or 1st grade", "7-8":"1st or 2nd grade", "9-10":"3rd or 4th grade", "11-12":"5th or 6th grade" };
+const H = { problems:[], cur:null, busy:false, pageStars:0, streak:0, bestStreak:0, pageDone:false };
+function resetHomework(){
+  Object.assign(H, { problems:[], cur:null, busy:false, pageStars:0, streak:0, bestStreak:0, pageDone:false });
+}
+
+/* ---------- numbers and words, for checking answers without a model call ---------- */
+const NUMW = Object.assign(Object.create(null), {
+  zero:0, one:1, two:2, three:3, four:4, five:5, six:6, seven:7, eight:8, nine:9, ten:10,
+  eleven:11, twelve:12, thirteen:13, fourteen:14, fifteen:15, sixteen:16, seventeen:17,
+  eighteen:18, nineteen:19, twenty:20, thirty:30, forty:40, fifty:50, sixty:60, seventy:70,
+  eighty:80, ninety:90, hundred:100
+});
+// What speech recognition hears when a kid says just the number.
+const SOUNDALIKE = Object.assign(Object.create(null), { for:4, fore:4, to:2, too:2, won:1, ate:8 });
+// Tiny words that show up in ordinary sentences; the model guard handles these.
+const COMMON = new Set(["a","i","an","the","is","it","me","we","to","in","on","at","up","go","no","so","do","my","and","you","can","see","look","he","she","be","am","of","or","yes"]);
+
+const words = t => String(t || "").toLowerCase().replace(/[^a-z0-9\s'-]/g, " ").split(/[\s-]+/).filter(Boolean);
+const norm = t => words(t).join(" ");
+function numbersIn(t, loose){
+  const w = words(t), out = [];
+  for(let i = 0; i < w.length; i++){
+    const x = w[i];
+    if(/^\d+$/.test(x)){ out.push(parseInt(x, 10)); continue; }
+    if(x in NUMW){
+      let n = NUMW[x];
+      const nx = w[i + 1];
+      if(n >= 20 && n < 100 && nx in NUMW && NUMW[nx] > 0 && NUMW[nx] < 10){ n += NUMW[nx]; i++; }
+      out.push(n); continue;
+    }
+    if(loose && x in SOUNDALIKE) out.push(SOUNDALIKE[x]);
+  }
+  return out;
+}
+const isNumeric = p => /^\s*-?\d+\s*$/.test(p.answer);
+
+/* true = definitely right, false = definitely wrong, null = let the model judge. */
+function localCorrect(p, kid){
+  if(p.kind === "writing") return null;
+  if(isNumeric(p)){
+    const nums = numbersIn(kid, words(kid).length <= 2);
+    const n = parseInt(p.answer, 10);
+    if(!nums.includes(n)) return false;
+    if(nums[nums.length - 1] === n) return true;   // "6... no, 7" counts as 7
+    return null;   // "7 because 3 plus 4" or "6 or 7?": the model decides
+  }
+  const k = norm(kid), kw = words(kid);
+  const forms = [p.answer, ...p.accept].map(norm).filter(Boolean);
+  if(forms.some(f => k === f || (f.includes(" ") ? k.includes(f) : kw.includes(f)))) return true;
+  return null;
+}
+
+/* Does a helper line say the answer outright? Cheap, catches most leaks. */
+function localLeak(p, line){
+  if(p.kind === "writing") return false;
+  if(isNumeric(p)){
+    const n = parseInt(p.answer, 10);
+    if(numbersIn(p.ask + " " + p.show).includes(n)) return false;   // e.g. 5 - 0 = 5; the model guard decides
+    return numbersIn(line).includes(n);
+  }
+  const askNorm = norm(p.ask), askWords = words(p.ask), lineNorm = norm(line), lineWords = words(line);
+  for(const f of [p.answer, ...p.accept]){
+    const nf = norm(f);
+    if(!nf || COMMON.has(nf)) continue;
+    if(nf.includes(" ")){ if(lineNorm.includes(nf) && !askNorm.includes(nf)) return true; }
+    else if(lineWords.includes(nf) && !askWords.includes(nf)) return true;
+  }
+  return false;
+}
+
+/* ---------- snap and solve ---------- */
+function solvePrompt(){
+  return `This is a photo of a child's homework worksheet. The child is ${S.age} years old, in ${GRADE[S.age] || "early elementary school"}. Find each separate problem or question on it, in order (up to 8), and solve each one yourself.
+
+Reply with ONLY this JSON:
+{"problems":[{"kind":"math","show":"","ask":"","answer":"","accept":[],"steps":[],"mistakes":[],"visual":{"type":"none","a":0,"b":0,"op":"add","emoji":"","parts":[]},"kidWrote":"","kidRight":null}]}
+
+Fields:
+- kind: "math", "phonics" (reading or sounding out a word), "reading" (questions about a passage), "writing", or "other".
+- show: exactly what is printed for this problem that the child should look at, like "3 + 4 = ___" or the word in the box. Short. Empty if there's nothing to show.
+- ask: one or two short sentences, in words a ${S.age} year old understands, telling them what to do. It is read out loud. It must NOT contain the answer. For phonics, do not put the word they need to read in ask; it goes only in show.
+- answer: the correct answer, as short as possible ("7", "cat", "the dog was lost"). Use digits for numbers. For open writing tasks, describe what a good answer needs ("a sentence about a pet with a capital letter, spaces, and an end mark").
+- accept: other forms that also count (like "seven").
+- steps: 2 to 4 very short steps a young child would take.
+- mistakes: 1 or 2 mistakes kids this age often make on this.
+- visual: a picture to help a young child think. "counters": a and b are the two numbers (0 to 20), op "add" or "take", emoji is one emoji that fits the story. "tenframe": a and b for adding or taking away within 20. "numberline": a is the start, b is the number of hops, op "add" or "take", all within 0 to 20. "chunks": parts splits a phonics word into readable chunks, like ["c","at"]. Otherwise type "none". Never make a visual that shows only the final answer.
+- kidWrote: anything the child already wrote in pencil as their answer, exactly. Empty if blank.
+- kidRight: true if kidWrote is correct, false if it is wrong, null if blank.
+
+Skip directions, names, dates, and decorations. If you can't read any problems, reply {"problems":[]}. Keep every string short.`;
+}
+
+function cleanProblem(x){
+  const v = (x && x.visual) || {};
+  const num = n => Math.max(0, Math.min(20, parseInt(n, 10) || 0));
+  const list = (a, n) => Array.isArray(a) ? a.map(String).filter(Boolean).slice(0, n) : [];
+  const type = ["counters","tenframe","numberline","chunks"].includes(v.type) ? v.type : "none";
+  const p = {
+    n: 0,
+    kind: ["math","phonics","reading","writing","other"].includes(x.kind) ? x.kind : "other",
+    show: String(x.show || "").trim().slice(0, 160),
+    ask: String(x.ask || "").trim().slice(0, 300),
+    answer: String(x.answer ?? "").trim().slice(0, 200),
+    accept: list(x.accept, 6),
+    steps: list(x.steps, 5),
+    mistakes: list(x.mistakes, 3),
+    visual: { type, a: num(v.a), b: num(v.b), op: v.op === "take" ? "take" : "add",
+              emoji: [...String(v.emoji || "")].slice(0, 2).join("") || "🟣", parts: list(v.parts, 6) },
+    kidWrote: String(x.kidWrote || "").trim().slice(0, 120),
+    kidRight: x.kidRight === true || x.kidRight === "true" ? true : x.kidRight === false || x.kidRight === "false" ? false : null,
+    status: "new", rung: 0, turns: [], tries: [], note: "", stars: 0, revisit: false
+  };
+  if(p.visual.op === "take") p.visual.b = Math.min(p.visual.b, p.visual.a);
+  if(!p.ask) p.ask = "Can you work this one out?";
+  if(p.kidWrote && p.kidRight === true) p.status = "paper";
+  return p;
+}
+
+$("hwBtn").onclick = () => { unlockSpeech(); keepAwake(); stopReading(); openHomework(); };
+$("hwHome").onclick = goHome;
+function openHomework(){
+  if(H.problems.length && !H.pageDone){
+    screen("hwScreen"); show("hwSnapCard", false); show("hwListCard", true); renderProblems();
+  }else newHwPage();
+}
+function newHwPage(){
+  resetHomework();
+  screen("hwScreen");
+  show("hwListCard", false); show("hwSnapCard", true);
+  $("hwShot").classList.add("hidden"); show("hwStatus", false);
+  startCamera("hw");
+}
+$("hwNewPage").onclick = () => {
+  const started = H.problems.some(x => x.status === "solved" || x.turns.length > 1);
+  if(started && !confirm("Start a different page? Problems on this page that aren't finished won't be saved.")) return;
+  newHwPage();
+};
+$("hwRetryCamBtn").onclick = () => startCamera("hw");
+$("hwUploadBtn").onclick = () => $("hwFileInput").click();
+$("hwFileInput").onchange = async e => {
+  const f = e.target.files[0];
+  e.target.value = "";
+  if(!f) return;
+  try{
+    const d = await shrinkFile(f, 1568);   // worksheets have small print, so keep more detail than book pages
+    showShot("hw", d);
+    solvePage(d.split(",")[1]);
+  }catch(err){
+    statusErr("hwStatus", "That file isn't a picture I can open. Try a JPG or PNG.");
+  }
+};
+$("hwSnapBtn").onclick = () => {
+  unlockSpeech();
+  const d = captureFrame("hw", 1568);
+  if(!d){ $("hwFileInput").click(); return; }
+  showShot("hw", d);
+  solvePage(d.split(",")[1]);
+};
+
+async function solvePage(b64){
+  if(H.busy) return; H.busy = true;
+  $("hwSnapBtn").disabled = true;
+  statusBusy("hwStatus", "Looking at your homework…");
+  try{
+    const data = await askJSON([
+      { type:"image", source:{ type:"base64", media_type:"image/jpeg", data:b64 } },
+      { type:"text", text: solvePrompt() }
+    ], 1500, { system: "You read photos of young children's homework worksheets and solve them carefully and accurately. Reply with JSON only." });
+    const raw = Array.isArray(data) ? data : (data.problems || []);
+    const probs = raw.slice(0, 8).filter(x => x && typeof x === "object").map(cleanProblem)
+      .filter(x => x.answer || x.kind === "writing");
+    if(!probs.length){
+      statusErr("hwStatus", "I couldn't find any problems on that page. Fit the whole worksheet inside the corners, turn on a light, and snap again.");
+      $("hwShot").classList.add("hidden");
+      startCamera("hw");
+      return;
+    }
+    resetHomework();
+    probs.forEach((x, i) => {
+      x.n = i + 1;
+      if(x.status === "paper"){ x.tries = [x.kidWrote]; logResult(x, "paper"); }
+    });
+    H.problems = probs;
+    $("hwStatus").classList.add("hidden");
+    stopCamera();
+    show("hwSnapCard", false); show("hwListCard", true);
+    renderProblems();
+    const open = nextOpenIndex();
+    say(open === -1
+      ? `Everything on this page is already right. Tap Finish my page to get your sticker.`
+      : `I found ${plural(probs.length, "problem")}. Tap one to start.`);
+  }catch(err){
+    statusErr("hwStatus", "Couldn't send that picture. Tap the button to try again." +
+      `<br><span style="opacity:.65;font-size:11px">${esc(err.message || err)}</span>`);
+  }finally{
+    H.busy = false; $("hwSnapBtn").disabled = false;
+  }
+}
+
+/* ---------- problem list ---------- */
+const BADGE = {
+  new:     () => "Start",
+  working: x => x.rung ? `Hint ${x.rung} of 4` : "Started",
+  solved:  x => "★".repeat(x.stars || 1) + " Got it",
+  paper:   () => "✓ Right on paper",
+  grownup: () => "🙋 Try with a grown-up"
+};
+const nextOpenIndex = () => H.problems.findIndex(x => x.status === "new" || x.status === "working");
+
+function renderProblems(){
+  const total = H.problems.length;
+  const done = H.problems.filter(x => ["solved","paper","grownup"].includes(x.status)).length;
+  $("probs").innerHTML = H.problems.map((x, i) => {
+    const locked = x.status === "solved" || x.status === "paper";
+    return `<button type="button" class="prob ${x.status}" data-i="${i}" ${locked ? "disabled" : ""}>
+      <span class="num">${x.n}</span>
+      <span class="txt">${esc(x.show || x.ask)}</span>
+      <span class="badge">${BADGE[x.status](x)}</span>
+    </button>`;
+  }).join("");
+  $("probs").querySelectorAll(".prob:not([disabled])").forEach(el => { el.onclick = () => openProblem(+el.dataset.i); });
+  const open = nextOpenIndex();
+  const waiting = H.problems.filter(x => x.status === "grownup").length;
+  $("hwListSub").textContent =
+    H.pageDone ? "This page is finished. Snap a new page to keep going." :
+    open === -1 ? (waiting
+      ? `Every problem is done or waiting for a grown-up. You can finish now, or try the grown-up ones again after they help.`
+      : "Every problem is done. Tap Finish my page to get your sticker.") :
+    `${done} of ${total} done. Tap a problem to work on it. Problems with a check mark are finished.`;
+  show("hwFinish", open === -1 && !H.pageDone);
+}
+$("hwFinish").onclick = finishPage;
+
+/* ---------- one problem ---------- */
+const lastHelper = p => { for(let i = p.turns.length - 1; i >= 0; i--) if(p.turns[i].who === "helper") return p.turns[i].text; return ""; };
+const hasVisual = p => p.visual.type !== "none" && (p.visual.type !== "chunks" || p.visual.parts.length > 0);
+
+function openProblem(i){
+  const p = H.problems[i]; if(!p) return;
+  H.cur = p;
+  let opening = "";
+  if(p.status === "grownup"){
+    // After a grown-up helps, try again from the last hint rather than from scratch.
+    p.status = "working"; p.rung = Math.min(p.rung, 3); p.revisit = true;
+    opening = "Welcome back. Let's try this one again. Tell me your answer when you're ready.";
+  }else if(p.status === "new"){
+    p.status = "working";
+    opening = p.kidWrote && p.kidRight === false
+      ? `On your paper you wrote ${p.kidWrote}. Let's check it together.`
+      : "Try it your way first. Tell me your answer when you're ready.";
+  }
+  if(opening) p.turns.push({ who:"helper", text: opening });
+
+  screen("hwProbScreen");
+  show("probCard", true); show("gotItCard", false); show("stuckCard", false);
+  $("hwAnswer").value = "";
+  renderProblem();
+  const line = lastHelper(p);
+  bubble(line);
+  say(p.ask + " " + line);
+}
+
+function renderProblem(){
+  const p = H.cur; if(!p) return;
+  $("probNum").textContent = `Problem ${p.n} of ${H.problems.length}`;
+  const sb = $("probShow");
+  sb.textContent = p.show;
+  sb.classList.toggle("long", p.show.length > 18);
+  show("probShow", !!p.show);
+  $("probAsk").textContent = p.ask;
+  renderVisual(p);
+  renderLadder(p);
+  show("hwPhoto", p.kind === "writing");
+}
+
+function renderLadder(p){
+  const text = [
+    "No hints yet. Try it your way first.",
+    "Hint 1 of 4: look at the problem again.",
+    hasVisual(p) ? "Hint 2 of 4: use the picture." : "Hint 2 of 4: think about the idea.",
+    "Hint 3 of 4: try a smaller one first.",
+    "Hint 4 of 4: we're doing it together. You say the last step."
+  ][p.rung];
+  let pips = "";
+  for(let i = 1; i <= 4; i++) pips += `<i class="${i <= p.rung ? "on" : ""}"></i>`;
+  $("ladder").innerHTML = pips + `<span class="lt">${text}</span>`;
+}
+
+function renderVisual(p){
+  const box = $("probVisual"), v = p.visual;
+  if(p.rung < 2 || !hasVisual(p)){ box.innerHTML = ""; show("probVisual", false); return; }
+  const reps = (n, cls) => Array.from({ length:n }, (_, i) => `<span class="${cls ? cls(i) : ""}">${esc(v.emoji)}</span>`).join("");
+  let html = "";
+  if(v.type === "counters"){
+    html = v.op === "take"
+      ? `<div class="grp">${reps(v.a, i => i >= v.a - v.b ? "gone" : "")}</div><div class="cap">Some went away. Count the ones that are left.</div>`
+      : `<div class="grp">${reps(v.a)}</div><div class="op">+</div><div class="grp">${reps(v.b)}</div><div class="cap">Count them all, one at a time.</div>`;
+  }else if(v.type === "tenframe"){
+    const take = v.op === "take";
+    const total = take ? v.a : Math.min(20, v.a + v.b);
+    const frames = total > 10 ? 2 : 1;
+    for(let f = 0; f < frames; f++){
+      html += `<div class="frame">`;
+      for(let i = f * 10; i < f * 10 + 10; i++){
+        const cls = take ? (i < v.a ? (i >= v.a - v.b ? "x" : "a") : "")
+                         : (i < v.a ? "a" : i < v.a + v.b ? "b" : "");
+        html += `<i class="${cls}"></i>`;
+      }
+      html += `</div>`;
+    }
+    html += `<div class="cap">${take ? "The pale dots went away. Count the red dots that are left." : "Count the red dots, then keep counting the blue ones."}</div>`;
+  }else if(v.type === "numberline"){
+    const max = Math.min(20, Math.max(10, v.op === "take" ? v.a : v.a + v.b));
+    for(let i = 0; i <= max; i++) html += `<button type="button" data-n="${i}" class="${i === v.a ? "start frog" : ""}">${i}</button>`;
+    html = `<div class="line">${html}</div><div class="cap">The frog starts at ${v.a}. Tap the numbers to hop ${v.op === "take" ? "back" : "forward"} ${v.b} ${v.b === 1 ? "time" : "times"}.</div>`;
+  }else if(v.type === "chunks"){
+    html = `<div class="chunks">${v.parts.map(x => `<span>${esc(x)}</span>`).join("")}</div><div class="cap">Read each chunk, then push them together.</div>`;
+  }
+  box.innerHTML = html;
+  show("probVisual", true);
+  box.querySelectorAll(".line button").forEach(b => {
+    b.onclick = () => { box.querySelectorAll(".line button.frog").forEach(x => x.classList.remove("frog")); b.classList.add("frog"); };
+  });
+}
+
+function bubble(text, html){
+  show("bubble", true);
+  if(html) $("bubbleText").innerHTML = text; else $("bubbleText").textContent = text;
+}
+function setHwBusy(on){ ["hwCheck","hwHint","hwPhoto","hwMic"].forEach(id => { $(id).disabled = on; }); }
+
+/* ---------- Hoot ---------- */
+function hwSystem(){
+  return `You are Hoot, a warm, patient homework helper for a ${S.age} year old in ${GRADE[S.age] || "early elementary school"}. Everything you say is read out loud, and the child may not be able to read yet.
+
+Always:
+- Never say, spell, or write the answer before the child says it, and never do the last step for them. Don't hint in a way they could just repeat back.
+- Keep "say" to one or two short sentences, under 25 words. Everyday words. Ask one question at a time.
+- Answer what the child actually said. If part of it was right, name that part.
+- Praise specific thinking or effort, not "great job".
+- Write numbers as digits.
+- Word reading: never say the word they are trying to read. Don't try to make letter sounds, because the voice can't say them. Talk about letter names, the chunks on screen, and words it rhymes with.
+- Writing: help with one fix at a time (capital letter, spaces between words, end mark, or one spelling). Never write their sentence or words for them.
+- Only talk about this homework. If they change the subject, bring them back with one kind sentence.
+- If they sound upset, frustrated, or want to stop, set upset to true and say something kind.
+- Once they have the right answer, you may say it back while celebrating.
+- Reply with only the JSON object.`;
+}
+
+function rungText(p, r){
+  return [
+    "",
+    "Nudge. Ask what the problem wants them to find, or have them look at one part again. Add no new information.",
+    hasVisual(p)
+      ? "Picture. A picture is on screen now. Have them use it: count, hop, or read the chunks."
+      : "Idea. Remind them of the idea they need with a tiny everyday example that is not this problem.",
+    "Smaller. Give a smaller, easier problem of the same kind to do first (tiny numbers or a shorter word), then connect it back.",
+    "Together. Do the steps with them one at a time, asking them to do each step. Stop before the last step so they say the answer."
+  ][r];
+}
+function visualDesc(p){
+  if(!hasVisual(p)) return "none";
+  const v = p.visual;
+  const what = v.type === "counters" ? (v.op === "take" ? `${v.a} ${v.emoji} with ${v.b} faded out` : `${v.a} ${v.emoji} plus ${v.b} ${v.emoji}`)
+    : v.type === "tenframe" ? (v.op === "take" ? `ten frames with ${v.a} dots, ${v.b} of them faded` : `ten frames with ${v.a} red dots and ${v.b} blue dots`)
+    : v.type === "numberline" ? `a number line with a frog starting at ${v.a}`
+    : `the word in chunks: ${v.parts.join(" | ")}`;
+  return `from hint 2 on, the screen shows ${what}` + (p.rung >= 2 ? " (showing now)" : " (not showing yet)");
+}
+
+function tutorContent(p, shown, known, nextRung, hint, image, retry){
+  const turns = p.turns.slice(-12).map(t => (t.who === "kid" ? "Child: " : "Hoot: ") + t.text).join("\n");
+  const verdict = hint ? "The child asked for a hint instead of answering. Set correct and progress to false."
+    : known === true ? "Their answer IS correct. Set correct to true and celebrate, naming what they did right."
+    : known === false ? "It is NOT the correct final answer. It may still be a correct step, or a correct answer to a smaller practice problem you gave; if so, set progress to true."
+    : image ? "Look at the photo of what they wrote. Decide whether it meets what the answer needs. If not, check whether they fixed something since last time (progress)."
+    : "Decide whether they have the correct final answer. If not, check whether it's a correct step or a correct answer to a practice problem you gave (progress).";
+  const text =
+`HIDDEN. Never reveal the answer before the child says it.
+Kind of problem: ${p.kind}
+On the page: ${p.show || "(nothing extra)"}
+What the child was asked: ${p.ask}
+Answer: ${p.answer}${p.accept.length ? " (also counts: " + p.accept.join(", ") + ")" : ""}
+Steps: ${p.steps.join(" / ") || "(none given)"}
+Common mistakes: ${p.mistakes.join(" / ") || "(none given)"}
+On their paper they wrote: ${p.kidWrote || "nothing"}
+Picture: ${visualDesc(p)}
+${p.revisit ? "A grown-up helped them with this problem, and they're trying again.\n" : ""}
+This problem so far:
+${turns}
+
+${verdict}
+Current hint level: ${p.rung} of 4.
+If they don't have it and it isn't progress, give hint level ${nextRung}. ${rungText(p, nextRung)}
+${hint ? "" : `If it is progress, stay at hint level ${p.rung} and guide the next small step.`}
+${retry ? "Your last line gave away too much. Write a new line that does not reveal the answer in any way.\n" : ""}
+Reply with ONLY this JSON:
+{"correct":false,"progress":false,"say":"what Hoot says out loud","upset":false,"stuckNote":"for the parent: under 20 words on what they're mixing up, without the answer"}`;
+  const c = [];
+  if(image) c.push({ type:"image", source:{ type:"base64", media_type:"image/jpeg", data:image } });
+  c.push({ type:"text", text });
+  return c;
+}
+
+async function guardOK(p, line){
+  if(localLeak(p, line)) return false;
+  try{
+    const r = await askJSON([{ type:"text", text:
+`The answer the child needs to find on their own: ${p.answer}
+The problem: ${p.show} ${p.ask}
+Hoot's next line to the child: "${line}"
+
+Does Hoot's line give the answer away? It does if it says or spells the answer, says the word the child is trying to read, writes the child's sentence or words for them, or makes the answer something the child could just repeat. Numbers and words already in the problem are fine, and so are practice problems with different numbers.
+Reply with only {"leak":true} or {"leak":false}.` }], 60,
+      { model: GUARD_MODEL, system: "You check a homework helper's message to a young child. Reply with JSON only." });
+    return !(r.leak === true || r.leak === "true");
+  }catch(e){
+    return false;   // if the check can't run, use a safe canned hint instead
+  }
+}
+function cannedHint(p){
+  return [
+    "Let's look again. What is the problem asking you to find?",
+    "Let's look again. What is the problem asking you to find?",
+    hasVisual(p) ? "Look at the picture. Use your finger to help you." : "Let's go slow. What's the first thing we need to do?",
+    "Let's go one small step at a time. What do you notice first?",
+    "Let's do it together. What's the very first step?"
+  ][p.rung];
+}
+
+const bool = x => x === true || x === "true";
+async function hwSubmit(kidText, opt = {}){
+  const p = H.cur;
+  if(!p || H.busy) return;
+  const hint = !!opt.hint;
+  if(!hint && !kidText && !opt.image){ $("hwAnswer").focus(); return; }
+  H.busy = true; setHwBusy(true);
+  SS.cancel();
+
+  const shown = hint ? "(tapped the hint button)"
+    : opt.image ? "(showed a photo of their writing)" + (kidText ? " " + kidText : "")
+    : kidText;
+  p.turns.push({ who:"kid", text: shown });
+  if(!hint) p.tries.push(opt.image ? "a photo of their writing" : kidText);
+  const known = hint ? false : (opt.image ? null : localCorrect(p, kidText));
+  const nextRung = Math.min(p.rung + 1, 4);
+  bubble('<span class="spin dark"></span>Hoot is thinking…', true);
+
+  try{
+    const r = await askJSON(tutorContent(p, shown, known, nextRung, hint, opt.image, false), 400, { system: hwSystem() });
+    const correct = !hint && (known !== null ? known : bool(r.correct));
+    const note = String(r.stuckNote || "").trim().slice(0, 200);
+    if(note && !localLeak(p, note)) p.note = note;
+    $("hwAnswer").value = "";
+
+    if(correct){ solved(p, String(r.say || "").trim()); return; }
+    if(bool(r.upset)){ needGrownUp(p, "upset"); return; }
+
+    const progress = !hint && bool(r.progress);
+    if(!progress){
+      if(p.rung >= 4){ needGrownUp(p, "hints"); return; }
+      p.rung = nextRung;
+    }
+    // A walk-through can go back and forth a while, but not forever.
+    if(p.turns.filter(t => t.who === "kid").length >= 14){ needGrownUp(p, "hints"); return; }
+
+    let line = String(r.say || "").trim();
+    if(!line || !(await guardOK(p, line))){
+      line = "";
+      try{
+        const r2 = await askJSON(tutorContent(p, shown, known, nextRung, hint, opt.image, true), 400, { system: hwSystem() });
+        const l2 = String(r2.say || "").trim();
+        if(l2 && await guardOK(p, l2)) line = l2;
+      }catch(e){}
+      if(!line) line = cannedHint(p);
+    }
+    p.turns.push({ who:"helper", text: line });
+    renderProblem();
+    bubble(line);
+    say(line);
+  }catch(err){
+    p.turns.pop();
+    if(!hint) p.tries.pop();
+    $("hwAnswer").value = shown === kidText ? kidText : $("hwAnswer").value;
+    bubble(`That didn't send, so your answer is still in the box. Check the Wi-Fi and tap Check it again.`);
+  }finally{
+    H.busy = false; setHwBusy(false);
+  }
+}
+
+$("hwCheck").onclick = () => hwSubmit($("hwAnswer").value.trim());
+$("hwHint").onclick  = () => hwSubmit("", { hint:true });
+$("hwHear").onclick  = () => { unlockSpeech(); if(H.cur) say(H.cur.ask + " " + lastHelper(H.cur)); };
+$("hwPhoto").onclick = () => $("hwWriteFile").click();
+$("hwWriteFile").onchange = async e => {
+  const f = e.target.files[0];
+  e.target.value = "";
+  if(!f) return;
+  try{
+    const d = await shrinkFile(f, 1280);
+    hwSubmit($("hwAnswer").value.trim(), { image: d.split(",")[1] });
+  }catch(err){
+    bubble("That file isn't a picture I can open. Try taking the photo again.");
+  }
+};
+$("probBack").onclick = backToList;
+$("gotList").onclick = backToList;
+function backToList(){
+  SS.cancel();
+  screen("hwScreen"); show("hwSnapCard", false); show("hwListCard", true);
+  renderProblems();
+}
+
+function solved(p, line){
+  const stars = p.rung <= 1 ? 2 : 1;
+  p.status = "solved"; p.stars = stars;
+  H.pageStars += stars;
+  if(p.rung === 0 && !p.revisit){ H.streak++; H.bestStreak = Math.max(H.bestStreak, H.streak); }
+  else H.streak = 0;
+  logResult(p, p.revisit ? "grownup" : p.rung === 0 ? "own" : p.rung === 1 ? "nudge" : p.rung <= 3 ? "hints" : "walked", p.revisit ? "solved after help" : "");
+  if(!line) line = "Yes! You figured it out.";
+  p.turns.push({ who:"helper", text: line });
+
+  show("probCard", false); show("stuckCard", false); show("gotItCard", true);
+  $("gotStars").textContent = "★".repeat(stars) + "☆".repeat(2 - stars);
+  $("gotLine").textContent = line;
+  $("hwNext").textContent = nextOpenIndex() === -1 ? "⭐ Finish my page" : "Next problem";
+  window.scrollTo(0, 0);
+  say(line + (H.streak >= 3 ? ` That's ${H.streak} in a row on your own!` : ""));
+}
+$("hwNext").onclick = () => {
+  const i = nextOpenIndex();
+  if(i === -1) finishPage(); else openProblem(i);
+};
+
+function needGrownUp(p, why){
+  p.status = "grownup"; H.streak = 0;
+  logResult(p, "grownup", why === "upset" ? "got upset" : "");
+  show("probCard", false); show("gotItCard", false); show("stuckCard", true);
+  $("stuckTitle").textContent = why === "upset" ? "Let's take a break" : "Time to get a grown-up";
+  $("stuckSub").textContent = why === "upset"
+    ? "It's okay to feel stuck. A grown-up can sit with you for this one."
+    : "You kept trying on a tricky one. A grown-up can help with the hard part.";
+  const tries = p.tries.slice(-3);
+  $("stuckInfo").innerHTML =
+    `<b>For the grown-up:</b> problem ${p.n}, ${esc(p.show || p.ask)}<br>` +
+    (tries.length ? `They tried: ${esc(tries.join(", "))}.` : "They didn't give an answer yet.") +
+    (p.note ? `<br>What's tricky: ${esc(p.note)}` : "") +
+    `<br><span style="opacity:.7">The answer is in Grown-up notes on the home screen. When you're done helping, tap this problem to try again.</span>`;
+  $("stuckBack").textContent = nextOpenIndex() === -1 ? "⭐ Finish my page" : "Back to my problems";
+  window.scrollTo(0, 0);
+  say(why === "upset"
+    ? "It's okay to feel stuck. Let's take a break and get a grown-up."
+    : "That was a tricky one, and you kept trying. Let's get a grown-up to help with this part.");
+}
+$("stuckBack").onclick = () => { if(nextOpenIndex() === -1) finishPage(); else backToList(); };
+
+function finishPage(){
+  if(H.pageDone || !H.problems.length) return;
+  H.pageDone = true;
+  const solvedList = H.problems.filter(x => x.status === "solved");
+  const grown = H.problems.filter(x => x.status === "grownup").length;
+  const paper = H.problems.filter(x => x.status === "paper").length;
+  const max = solvedList.length * 2;
+  const pct = max ? H.pageStars / max : .5;
+  SAVE.stars += H.pageStars; SAVE.hwPages++; SAVE.best = Math.max(SAVE.best, H.bestStreak);
+  const got = rollSticker(pct, H.bestStreak);
+  persist();
+  let sub = `You solved ${plural(solvedList.length, "problem")} and earned ${plural(H.pageStars, "star")}.`;
+  if(paper) sub += ` ${paper} ${paper === 1 ? "was" : "were"} already right on your paper.`;
+  if(grown) sub += ` ${grown} ${grown === 1 ? "is" : "are"} waiting for a grown-up.`;
+  showDone({
+    title: grown ? "Page finished!" : pct >= .8 ? "Homework nailed!" : "Homework done!",
+    sub, stamp: "HOMEWORK DONE", stars: H.pageStars, max, got,
+    extra: H.bestStreak >= 3 ? ` Your best was ${H.bestStreak} in a row on your own!` : "",
+    againLabel: "📸 Snap another page", again: newHwPage
+  });
+}
+
+/* ---------- grown-up notes ---------- */
+const RESULT_LABEL = {
+  own: "Got it on their own", nudge: "Got it after one nudge", hints: "Got it with hints",
+  walked: "Walked through it together", grownup: "Needed a grown-up", paper: "Already right on paper"
+};
+function logResult(p, result, why){
+  if(!P.id) return;
+  const log = store.get(P.id + ":hwLog", []);
+  log.unshift({ t: Date.now(), text: p.show || p.ask, kind: p.kind, answer: p.answer, result, why: why || "", tries: p.tries.slice(-3), note: p.note || "" });
+  store.set(P.id + ":hwLog", log.slice(0, 80));
+}
+
+let gateAnswer = 0;
+$("notesBtn").onclick = () => {
+  const a = 6 + Math.floor(Math.random() * 4), b = 6 + Math.floor(Math.random() * 4);
+  gateAnswer = a * b;
+  $("gateQ").textContent = `What is ${a} × ${b}?`;
+  $("gateBox").value = ""; show("gateMsg", false);
+  screen("notesScreen"); show("gateCard", true); show("notesCard", false);
+  $("gateBox").focus();
+};
+function tryGate(){
+  if(parseInt($("gateBox").value, 10) === gateAnswer){
+    show("gateCard", false); show("notesCard", true); renderNotes();
+  }else{
+    $("gateMsg").textContent = "Not quite. This part is for grown-ups.";
+    show("gateMsg", true);
+  }
+}
+$("gateGo").onclick = tryGate;
+$("gateBox").onkeydown = e => { if(e.key === "Enter") tryGate(); };
+$("gateCancel").onclick = () => screen("setupScreen");
+$("notesClose").onclick = () => screen("setupScreen");
+$("notesClear").onclick = () => {
+  if(confirm(`Clear all homework notes for ${P.name}? Stickers and stars stay.`)){ store.set(P.id + ":hwLog", []); renderNotes(); }
+};
+
+function renderNotes(){
+  $("notesTitle").textContent = `Grown-up notes for ${P.name}`;
+  const log = store.get(P.id + ":hwLog", []);
+  if(!log.length){
+    $("notesList").innerHTML = `<p class="sub">Nothing here yet. Once ${esc(P.name)} works through a homework page, each problem shows up here with how it went.</p>`;
+    show("notesClear", false);
+    return;
+  }
+  show("notesClear", true);
+  const counts = {};
+  log.forEach(e => { counts[e.result] = (counts[e.result] || 0) + 1; });
+  let html = `<p class="sub"><b>${plural(log.length, "problem")} so far.</b> ` +
+    Object.keys(RESULT_LABEL).filter(k => counts[k]).map(k => `${RESULT_LABEL[k]}: ${counts[k]}`).join(". ") + ".</p>";
+  let day = "";
+  for(const e of log){
+    const d = new Date(e.t).toLocaleDateString([], { weekday:"long", month:"short", day:"numeric" });
+    if(d !== day){ day = d; html += `<div class="day">${esc(d)}</div>`; }
+    html += `<div class="note ${esc(e.result)}">
+      <div class="res">${esc(RESULT_LABEL[e.result] || e.result)}${e.why ? ` (${esc(e.why)})` : ""}</div>
+      <div>${esc(e.text)}</div>
+      <div class="meta">Answer: ${esc(e.answer || "open-ended")}</div>
+      ${e.tries && e.tries.length ? `<div class="meta">They tried: ${esc(e.tries.join(", "))}</div>` : ""}
+      ${e.note ? `<div class="meta">What's tricky: ${esc(e.note)}</div>` : ""}
+    </div>`;
+  }
+  $("notesList").innerHTML = html;
+}
+
 /* ---------------- start ---------------- */
+attachMic("micBtn", "answerBox");
+attachMic("hwMic", "hwAnswer");
 renderWho();
 const last = store.get("lastReader", null);
 if(last && P.list.some(p => p.id === last)){
   loadProfile(last);
-  show("whoScreen", false); show("setupScreen", true);
-}
-
-$("backToRead").onclick = () => { stopReading(); show("quizScreen", false); show("readScreen", true); $("quizBtn").disabled = false; };
-$("newChapterBtn").onclick = () => {
-  S.pages = []; S.questions = []; S.qi = 0; S.stars = 0; S.streak = 0; S.bestStreak = 0;
-  show("reveal", false);
-  $("stamps").innerHTML = '<div class="empty">No stamps yet. Every page you read puts a stamp on your card.</div>';
-  $("stampCount").textContent = "0";
-  $("quizBtn").disabled = true; $("quizBtn").textContent = "✅ Done with the chapter — ask me questions";
-  show("textCard", false); show("doneScreen", false); show("readScreen", true);
-  startCamera();
-};
-
-/* ---------------- speech in (answering out loud) ---------------- */
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-if(!SR){ $("micBtn").classList.add("hidden"); }
-else{
-  let rec = null, listening = false;
-  $("micBtn").onclick = () => {
-    if(listening){ rec.stop(); return; }
-    rec = new SR(); rec.lang = "en-US"; rec.interimResults = true; rec.continuous = false;
-    rec.onstart = () => { listening = true; $("micBtn").textContent = "🔴 Listening… tap to stop"; };
-    rec.onresult = e => {
-      let t = ""; for(const r of e.results) t += r[0].transcript;
-      $("answerBox").value = t;
-    };
-    rec.onerror = () => { $("answerBox").placeholder = "The mic didn't work — type your answer instead."; };
-    rec.onend = () => { listening = false; $("micBtn").textContent = "🎤 Say it"; };
-    SS.cancel();
-    rec.start();
-  };
+  screen("setupScreen");
 }
 </script>
 </body>
